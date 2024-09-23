@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/charles-futDevFloripa/blob/develop/public/destinoCerto.png" alt="Logo do Destino Certo">
+  <img src="https://github.com/FuturoDEV-Eco/M3P-FrontEnd-Squad2/blob/main/public/destinoCerto.png" alt="Logo do Destino Certo">
 </p>
 
 # Destino Certo
@@ -11,7 +11,7 @@
 Este projeto visa incentivar o descarte correto do lixo, auxiliando a localizar o ponto de coleta correto na sua região.
 
 <p align="center">
-  <img src="https://github.com/FuturoDEV-Eco/M3P-FrontEnd-Squad2/blob/develop/public/prints/globalMap.jpg?raw=true" alt="destinoCerto">
+  <img src="https://github.com/FuturoDEV-Eco/M3P-FrontEnd-Squad2/blob/main/public/prints/globalMap.jpg?raw=true" alt="destinoCerto">
 </p>
 
 ## Regras de negócio
