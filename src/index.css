@@ -1,0 +1,619 @@
+@import url('https://fonts.googleapis.com/css2?family=ABeeZee:ital@0;1&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+/* Reset padrão para todos os elementos */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Definição de variáveis de cores e fontes */
+:root {
+  --navajo-white: rgb(226, 226, 226);
+  --pakistan-green: rgba(5, 102, 8, 1);
+  --pakistan-green-alpha: rgba(40, 54, 24, 0.6);
+  --pakistan-green-border: rgba(40, 54, 24, 0.3);
+  --penn-red: rgba(152, 5, 0, 1);
+  --ivory: rgba(244, 249, 233, 1);
+  --space-cadet: rgba(34, 46, 80, 1);
+  --space-cadet-alpha: rgba(34, 46, 80, 0.3);
+  --font: 'Raleway', sans-serif;
+}
+
+.danger {
+  color: var(--penn-red);
+}
+
+.primary {
+  color: var(--space-cadet);
+}
+
+.primary-bold {
+  font-weight: 700;
+  color: var(--space-cadet);
+}
+
+.success {
+  color: var(--pakistan-green);
+}
+
+body {
+  font-family: var(--font);
+  line-height: 1.6;
+  background-color: var(--navajo-white);
+}
+
+a {
+  text-decoration: none;
+}
+
+
+.login-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.container-login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 95vw;
+  gap: 15px;
+}
+
+.singin {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.button-login {
+  width: 100%;
+  padding: 12px;
+  font-size: 1em;
+  color: var(--ivory);
+  background-color: var(--pakistan-green);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.button-login:hover {
+  background-color: var(--space-cadet);
+}
+
+/* Estilos universais para logos, ajustados com media queries */
+.logo {
+  height: 70px;
+
+  @media (min-width: 2500px) {
+    height: 120px;
+  }
+}
+
+
+.main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+
+
+}
+
+.page-title-form {
+  width: 100%;
+  font-size: 1.4em;
+  font-weight: 700;
+  color: var(--space-cadet);
+  padding-left: 1em;
+  margin-bottom: 1em;
+}
+
+.page-title {
+  width: 100%;
+  font-size: 1.4em;
+  font-weight: 700;
+  color: var(--space-cadet);
+  padding-left: 1em;
+}
+
+@media (min-width: 768px) {
+  .page-title {
+    padding-left: 2em;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-title {
+    padding-left: 1em;
+  }
+}
+
+@media (min-width: 1200px) {
+  .page-title {
+    padding-left: 3em;
+  }
+}
+
+
+.align-icon {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.boxes {
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+}
+
+.box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 45%;
+  padding: 10px;
+  border-radius: 20px 0;
+}
+
+.box-number {
+  font-size: 2em;
+  font-weight: 700;
+}
+
+.box-icon {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: right;
+}
+
+.color-place {
+  background-color: var(--pakistan-green);
+  color: var(--ivory);
+}
+
+.color-user {
+  background-color: var(--space-cadet);
+  color: var(--ivory);
+}
+
+.section-cards {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1em;
+  margin-bottom: 1em;
+  max-width: 95%;
+}
+
+.cards {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border: solid 1px var(--pakistan-green-border);
+  border-radius: 10px;
+  background-color: var(--ivory);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+}
+
+@media (min-width: 992px) {
+  .cards {
+    width: calc(50% - .5em);
+  }
+}
+
+@media (min-width: 1200px) {
+  .cards {
+    width: calc(33% - .5em);
+    margin: 0;
+  }
+}
+
+.card-map {
+  width: 100%;
+  margin-bottom: 20px;
+
+}
+
+.card-body {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 5px;
+
+}
+
+
+
+.link-details {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  color: var(--ivory);
+  font-size: 0.8em;
+}
+
+.link-details-users {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  color: var(--ivory);
+  font-size: 1.3em;
+  font-weight: 500;
+  gap: 10px;
+
+}
+
+.btn {
+  width: 5.5em;
+  padding: 3px 3px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 1em;
+  text-align: center !important;
+  color: var(--ivory);
+  background-color: var(--pakistan-green);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+}
+
+.btn:hover {
+  color: var(--navajo-white);
+  background-color: var(--space-cadet);
+}
+
+
+.card-detail {
+  width: 95%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--ivory);
+  margin-left: auto;
+  margin-right: auto;
+  color: var(--space-cadet);
+  margin-bottom: 30px;
+
+  padding: 15px;
+  border: solid 1px var(--pakistan-green-border);
+  border-radius: 10px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+}
+
+.card-detail-body {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+
+
+.card-detail-address {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.card-detail-footer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+}
+
+
+@media (min-width: 768px) {
+  .card-detail-body {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 25px;
+  }
+
+  .card-detail-description {
+    width: 45%;
+  }
+
+  .card-detail-address {
+    width: 48%;
+  }
+}
+
+@media (min-width: 992px) {
+  .card-detail-body {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 25px;
+    padding: 25px;
+  }
+
+  .card-detail-description {
+    width: 30%;
+  }
+
+  .card-detail-address {
+    width: 30%;
+  }
+
+  .card-detail-footer {
+    width: 30%;
+    align-items: flex-start;
+  }
+}
+
+.card-detail-address-text {
+  font-size: 0.8em;
+}
+
+.card-detail-actions {
+  font-size: 1.8em;
+}
+
+.card-detail-map {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.card-detail-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  padding: 10px;
+  justify-content: space-between;
+}
+
+
+
+/* Estilos para formulários e erros */
+.container-form {
+  width: 95%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.card-form {
+  padding: 20px;
+  width: 100%;
+  max-width: 500px;
+  background-color: var(--ivory);
+  border-radius: 20px 0;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+  margin: 0 auto 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card-form input[type='text'],
+.card-form input[type='password'],
+.card-form input[type='date'],
+.card-form input[type='email'],
+.card-form select,
+.card-form textarea {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid var(--space-cadet);
+  border-radius: 4px;
+}
+
+.card-form input[type='text']:focus,
+.card-form input[type='password']:focus,
+.card-form input[type='date']:focus,
+.card-form input[type='email']:focus,
+.card-form select:focus,
+.card-form textarea:focus {
+  border-color: var(--pakistan-green);
+  outline: none;
+}
+
+/* Estilização para campos com erro */
+.card-form input.input-error,
+.card-form select.input-error,
+.card-form textarea.input-error {
+  border: 2px solid var(--penn-red);
+}
+
+/* Mensagens de erro */
+.error-message {
+  color: var(--penn-red);
+  font-size: 0.75em;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  display: block;
+}
+
+/* Botão de Submit */
+button[type='submit'] {
+  width: 100%;
+  padding: 12px;
+  font-size: 1em;
+  color: var(--ivory);
+  background-color: var(--pakistan-green);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button[type='submit']:hover {
+  background-color: var(--space-cadet);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .card-form {
+    padding: 15px;
+  }
+}
+
+/* Estilos de header e navigation links */
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+  margin-top: 1em;
+  width: 100%;
+}
+
+.logo-container {
+  width: 100%;
+  /* Assegura que o logo ocupe a largura total no modo mobile */
+  display: flex;
+  justify-content: center;
+
+}
+
+.nav-container {
+  width: 100%;
+  color: var(--space-cadet);
+  /* Garante que o contêiner do menu ocupe a largura total */
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+  /* Espalha os itens de forma uniforme */
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.nav-links a:visited {
+  color: var(--space-cadet);
+}
+
+.nav-links li.dropdown {
+  flex: 1;
+  text-align: center;
+  position: relative;
+  white-space: nowrap;
+  padding: 10px 0;
+  width: 100%;
+  /* Adiciona padding vertical para melhorar o toque em dispositivos móveis */
+}
+
+.dropdown-toggle {
+  display: flex;
+  align-items: center;
+  /* Alinha verticalmente o ícone com o texto */
+  justify-content: center;
+  /* Centraliza horizontalmente o conteúdo */
+  width: 100%;
+  gap: 8px;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: var(--ivory);
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  width: 100%;
+  left: 0;
+  top: 100%;
+
+}
+
+.dropdown-content li {
+  display: block;
+  color: var(--space-cadet);
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Estilos do Footer */
+
+footer {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 10px;
+  background-color: var(--space-cadet);
+  color: var(--ivory);
+  font-size: 0.6em;
+}
+
+
+
+/* Ajuste de fontes */
+@media (min-width: 768px) {
+  body {
+    font-size: 1em;
+  }
+
+  .header-container {
+    flex-direction: row;
+  }
+}
+
+@media (min-width: 992px) {
+  body {
+    font-size: 1.125em;
+  }
+}
+
+@media (min-width: 1200px) {
+  body {
+    font-size: 1.25em;
+  }
+}
+
+@media (min-width: 2500px) {
+  body {
+    font-size: 2em;
+  }
+}
