@@ -88,7 +88,7 @@ function EditUser() {
         <div className='card-form'>
           <form onSubmit={handleSubmit(onSubmit)}>
             
-          <div className="form-row">
+            <div className="form-row">
               <div className="form-field">
                 <label htmlFor="">Usuário *</label>
                 <input
@@ -214,6 +214,8 @@ function EditUser() {
             </div>
             
 
+            <div className="divisor"></div>
+            
             <div className="form-row">
               <div className="form-field">
                 <label htmlFor="">CEP *</label>
