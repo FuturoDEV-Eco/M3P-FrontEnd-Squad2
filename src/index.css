@@ -283,8 +283,7 @@ a {
 }
 
 .btn {
-  width: 5.5em;
-  padding: 3px 3px;
+  padding: 3px 9px;
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -296,14 +295,13 @@ a {
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s;
-
+  gap: 6px;
 }
 
 .btn:hover {
   color: var(--navajo-white);
   background-color: var(--space-cadet);
 }
-
 
 .card-detail {
   width: 95%;
@@ -550,27 +548,49 @@ button[type='submit']:hover {
   /* Centraliza horizontalmente o conteúdo */
   width: 100%;
   gap: 8px;
+  cursor: pointer;
 }
 
 .dropdown-content {
-  display: none;
+  visibility: hidden;
   position: absolute;
   background-color: var(--ivory);
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
   z-index: 1;
-  width: 100%;
-  left: 0;
+  left: 50%;
   top: 100%;
-
+  transform: translateX(-50%) translateY(-20px);
+  opacity: 0;
+  transition: all .2s ease-in-out;
 }
-
-.dropdown-content li {
+.dropdown:last-child .dropdown-content{
+  right: 10px;
+  left: unset;transform: translateX(0) translateY(-20px);
+}
+.dropdown-content li a{
+  padding: 10px 30px;
+}
+.dropdown-content li,
+.dropdown-content li a {
   display: block;
   color: var(--space-cadet);
+  transition: all .2s ease-in-out;
+}
+.dropdown-content li:hover{
+  background-color: var(--space-cadet);
 }
 
+.dropdown-content li:hover a{
+  color: var(--navajo-white);
+}
 .dropdown:hover .dropdown-content {
-  display: block;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+.dropdown:last-child:hover .dropdown-content{
+  right: 10px;
+  transform: translateX(0) translateY(0);
 }
 
 /* Estilos do Footer */

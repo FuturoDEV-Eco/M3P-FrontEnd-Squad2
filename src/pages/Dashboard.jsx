@@ -52,9 +52,6 @@ function Dashboard() {
           <div className='box-title'>Mó Quiridus</div>
         </div>
       </div>
-      <div className='page-title align-icon'>
-        <HiMapPin /> <span>Pontos de coleta</span>
-      </div>
       {/* mapa com todos locais */}
       <div className='card-detail'>
         <div className='card-detail-header'>
@@ -100,6 +97,9 @@ function Dashboard() {
         </div>
       </div>
 
+      <div className='page-title align-icon'>
+        <HiMapPin /> <span>Pontos de coleta</span>
+      </div>
       <div className='section-cards'>
         {places.map((place) => (
           <div className='cards' key={place.id}>
