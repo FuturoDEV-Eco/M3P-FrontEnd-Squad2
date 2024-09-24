@@ -22,7 +22,7 @@ function Dashboard() {
   );
 
   useEffect(() => {
-    Object.keys(places).forEach(async (place) => {
+    places.forEach(async (place) => {
       if (place.user_id && !userNames[place.user_id]) {
         try {
           const user = await getUserById(place.user_id);
