@@ -1,0 +1,44 @@
+.form-row {
+    padding: 5px 0 0;
+}
+
+.form-row label{
+    font-size: .8em;
+}
+
+.form-row-2columns {
+    display: flex;   
+    gap: 10px;
+}
+.form-row-2columns.dinamicColumns{
+    flex-wrap: wrap;
+}
+
+.form-row .form-field{
+    flex: 1;
+}
+
+.form-field.small{
+    width: 100px;
+    flex: unset;
+}
+
+.form-row input::placeholder {
+    color: #888;
+    opacity: .6;
+}
+
+.form-row-2columns input{
+    width: 100%;
+}
+
+textarea{
+    resize: vertical;
+}
+
+.divisor {
+    width: 100%;
+    height: 1px;
+    background-color: #888;
+    opacity: .4;
+}
