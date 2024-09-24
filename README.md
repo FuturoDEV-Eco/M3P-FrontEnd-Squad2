@@ -40,6 +40,8 @@ O projeto **Destino Certo** adota uma arquitetura inspirada no modelo MVC, com a
 - **react-input-mask**: Aplica máscaras de entrada para campos como CPF e CEP, melhorando a experiência do usuário.
 - **react-icons**: Fornece ícones para aprimorar a estética da aplicação.
 - **react-leaflet**: Implementa mapas interativos para visualizar geograficamente os pontos de coleta.
+- **axios**: Possibilita as chamadas XHTTP para que os dados possam ser carregados da API.
+- **dotenv**: Habilita o uso de variáveis de ambiente para melhoria da segurança da aplicação.
 
 ### Estado e Gerenciamento
 
