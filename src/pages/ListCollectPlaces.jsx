@@ -5,8 +5,6 @@ import { UsersContext } from '../context/UsersContext';
 import { Link } from 'react-router-dom';
 import { HiMapPin } from 'react-icons/hi2';
 import { FaArrowsSpin } from 'react-icons/fa6';
-import { MdEditSquare } from 'react-icons/md';
-import { MdDelete } from 'react-icons/md';
 import { FaMapLocationDot } from 'react-icons/fa6';
 import { MdTextsms } from 'react-icons/md';
 import { FaUser } from 'react-icons/fa';
