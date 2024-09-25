@@ -4,6 +4,7 @@ import { UsersContext } from '../context/UsersContext';
 import logo from '../assets/destinoCerto.png';
 import { FaLock } from 'react-icons/fa6';
 import { MdAlternateEmail } from 'react-icons/md';
+import Header from '../components/Header';
 function Login() {
   const { userLogin } = useContext(UsersContext);
   const [user, setUser] = useState({
@@ -18,11 +19,7 @@ function Login() {
   return (
     <div className='login-main'>
       <div className='container-login'>
-        <div className='header-container'>
-          <div className='logo-container'>
-            <img src={logo} className='logo' alt='Destino certo' />
-          </div>
-        </div>
+        <Header />
         <div className='container-form'>
           <div className='card-form'>
             <form>
