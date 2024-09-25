@@ -2,8 +2,6 @@ import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { UsersContext } from '../context/UsersContext';
 import logo from '../assets/destinoCerto.png';
-import { FaLock } from 'react-icons/fa6';
-import { MdAlternateEmail } from 'react-icons/md';
 function Login() {
   const { userLogin } = useContext(UsersContext);
   const [user, setUser] = useState({
