@@ -79,232 +79,270 @@ function CreateUsers() {
               <FaUserPlus /> <span>Se cadatra Mó Quiridu!</span>
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <div className='align-icon'>
-                <FaUserPlus /> <span>Informações pessoais</span>
+              <div className="form-row">
+                <span>Dados Pessoais</span>
               </div>
-              <input
-                type='text'
-                className={errors.name ? 'input-error' : ''}
-                placeholder='Nome completo'
-                {...register('name', { required: 'Oh queridu o nome precisa' })}
-              />
-              {errors.name && (
-                <small className='error-message'>{errors.name.message}</small>
-              )}
-              {/* Radio buttons para gênero */}
-              <label className={errors.gender ? 'input-error' : ''}>
-                <input
-                  {...register('gender', {
-                    required: 'Se quex, quex, se não quex, dix',
-                  })}
-                  type='radio'
-                  value='M'
-                />{' '}
-                M{' '}
-              </label>
-              <label className={errors.gender ? 'input-error' : ''}>
-                <input
-                  {...register('gender', {
-                    required: 'Se quex, quex, se não quex, dix',
-                  })}
-                  type='radio'
-                  value='F'
-                />{' '}
-                F{' '}
-              </label>
-              <label className={errors.gender ? 'input-error' : ''}>
-                <input
-                  {...register('gender', {
-                    required: 'Se quex, quex, se não quex, dix',
-                  })}
-                  type='radio'
-                  value='NI'
-                />{' '}
-                Não informado{' '}
-              </label>
-              {errors.gender && (
-                <small className='error-message'>{errors.gender.message}</small>
-              )}
 
-              <InputMask
-                mask='999.999.999-99'
-                placeholder='CPF'
-                maskChar={null}
-                {...register('cpf', {
-                  required: 'Aqueles números do CPF. Não tem? Coloca ai!',
-                  pattern: /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/,
-                })}
-              >
-                {(inputProps) => (
+              <div className="form-row form-row-2columns">
+                <div className="form-field">
+                  <label htmlFor="">Nome Completo</label>
                   <input
-                    {...inputProps}
                     type='text'
-                    className={errors.cpf ? 'input-error' : ''}
+                    className={errors.name ? 'input-error' : ''}
+                    placeholder='João da Silva'
+                    {...register('name', { required: 'Oh queridu o nome precisa' })}
                   />
-                )}
-              </InputMask>
-              {errors.cpf && (
-                <small className='error-message'>{errors.cpf.message}</small>
-              )}
-              <div className='align-icon'>
-                <RiCakeFill />{' '}
-                <span>O aniversário é antes da safra da tainha?</span>
+                  {errors.name && (
+                    <small className='error-message'>{errors.name.message}</small>
+                  )}
+                </div>
+                <div className='form-field'>
+                  <label htmlFor="">Documento</label>
+                  <InputMask
+                    mask='999.999.999-99'
+                    placeholder='CPF'
+                    maskChar={null}
+                    {...register('cpf', {
+                      required: 'Aqueles números do CPF. Não tem? Coloca ai!',
+                      pattern: {
+                        value: /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/,
+                        message: 'Formato de CPF inválido',
+                      },
+                    })}
+                  >
+                    {(inputProps) => (
+                      <input
+                        {...inputProps}
+                        type='text'
+                        className={errors.cpf ? 'input-error' : ''}
+                      />
+                    )}
+                  </InputMask>
+                  {errors.cpf && (
+                    <small className='error-message'>{errors.cpf.message}</small>
+                  )}
+                </div>
               </div>
-              <input
-                type='date'
-                className={errors.birthDate ? 'input-error' : ''}
-                {...register('birthDate', {
-                  required: 'Dix aqui a data. Ninguém vai saber a idade.',
-                })}
-              />
-              {errors.birthDate && (
-                <small className='error-message'>
-                  {errors.birthDate.message}
-                </small>
-              )}
 
-              <div className='align-icon'>
-                <BsFillHouseFill /> <span>Onde fica seu rancho?</span>
-              </div>
-              <InputMask
-                mask='99999-999'
-                placeholder='CEP'
-                maskChar={null}
-                {...register('zipCode', {
-                  required: 'Não amarra a cara, mas o CEP é obrigatório',
-                  pattern: /^\d{5}-\d{3}$/,
-                })}
-              >
-                {(inputProps) => (
+              <div className="form-row form-row-2columns">
+                <div className="form-field">
+                  <label htmlFor="">Gênero *</label>
+                  <div className="gender-field">
+                    <select
+                      className={errors.gender ? 'input-error' : ''}
+                      {...register('gender', {
+                        required: 'Se quex, quex, se não quex, dix',
+                      })}
+                    >
+                      <option value=''>Esolha uma opção</option>
+                      <option value='M'>Masculino</option>
+                      <option value='F'>Feminino</option>
+                      <option value='NI'>Não informado</option>
+                    </select>
+                  </div>
+                  
+                  {errors.gender && (
+                    <small className='error-message'>{errors.gender.message}</small>
+                  )}
+                </div>
+                <div className='form-field'>
+                  <label htmlFor="">Data de Nascimento</label>
                   <input
-                    {...inputProps}
-                    type='text'
-                    className={errors.zipCode ? 'input-error' : ''}
+                    type='date'
+                    className={errors.birthDate ? 'input-error' : ''}
+                    {...register('birthDate', {
+                      required: 'Dix aqui a data. Ninguém vai saber a idade.',
+                    })}
                   />
-                )}
-              </InputMask>
-              {errors.zipCode && (
-                <small className='error-message'>
-                  {errors.zipCode.message}
-                </small>
-              )}
-
-              <input
-                type='text'
-                className={errors.street ? 'input-error' : ''}
-                placeholder='Rua'
-                {...register('street', { required: 'Esqueceu da Rua?' })}
-              />
-              {errors.street && (
-                <small className='error-message'>{errors.street.message}</small>
-              )}
-
-              <input
-                type='text'
-                className={errors.number ? 'input-error' : ''}
-                placeholder='Número'
-                {...register('number', {
-                  required: 'Se não tem número, coloca s/n',
-                })}
-              />
-              {errors.number && (
-                <small className='error-message'>{errors.number.message}</small>
-              )}
-
-              <input
-                type='text'
-                placeholder='Complemento'
-                {...register('complement')}
-              />
-
-              <input
-                type='text'
-                className={errors.neighborhood ? 'input-error' : ''}
-                placeholder='Bairro'
-                {...register('neighborhood', {
-                  required: 'Os queridus querem saber da vizinhança!',
-                })}
-              />
-              {errors.neighborhood && (
-                <small className='error-message'>
-                  {errors.neighborhood.message}
-                </small>
-              )}
-
-              <input
-                type='text'
-                className={errors.city ? 'input-error' : ''}
-                placeholder='Cidade'
-                {...register('city', {
-                  required: 'É em Floripa? Precisax dizer também.',
-                })}
-              />
-              {errors.city && (
-                <small className='error-message'>{errors.city.message}</small>
-              )}
-
-              <input
-                type='text'
-                className={errors.state ? 'input-error' : ''}
-                placeholder='Estado'
-                {...register('state', {
-                  required: 'Faltou aquelas duas letrinhas do exhtado',
-                })}
-              />
-              {errors.state && (
-                <small className='error-message'>{errors.state.message}</small>
-              )}
-
-              <div className='align-icon'>
-                <MdAlternateEmail />{' '}
-                <span>Dázumbanho! E usa teu melhor e-mail.</span>
+                  {errors.birthDate && (
+                    <small className='error-message'>
+                      {errors.birthDate.message}
+                    </small>
+                  )}
+                </div>
               </div>
-              <input
-                type='email'
-                className={errors.email ? 'input-error' : ''}
-                placeholder='E-mail'
-                {...register('email', {
-                  required: 'A gente manda cartinha pro boi de mamão',
-                })}
-              />
-              {errors.email && (
-                <small className='error-message'>{errors.email.message}</small>
-              )}
-              <div className='align-icon'>
-                <FaLock /> <span>Não seja ixtepô, capricha na senha!</span>
+              
+              <div className="form-row">
+                <span>Dados de Login</span>
               </div>
-              <input
-                type='password'
-                className={errors.password ? 'input-error' : ''}
-                placeholder='Senha'
-                {...register('password', {
-                  required: 'Dix uma senha não vai esquecer.',
-                  minLength: 6,
-                  message: 'É Seix letrinhas no mínimo.',
-                })}
-              />
-              {errors.password && (
-                <small className='error-message'>
-                  {errors.password.message}
-                </small>
-              )}
 
-              <input
-                type='password'
-                className={errors.confirmPassword ? 'input-error' : ''}
-                placeholder='Confirmar senha'
-                {...register('confirmPassword', {
-                  required: 'Oh queridu, confirma a senha.',
-                  minLength: 6,
-                  message: 'É Seix letrinhas no mínimo.',
-                })}
-              />
-              {errors.confirmPassword && (
-                <small className='error-message'>
-                  {errors.confirmPassword.message}
-                </small>
-              )}
+              <div className="form-row">
+                <div className="form-field">
+                  <label htmlFor="">E-mail *</label>
+                  <input
+                    type='email'
+                    className={errors.email ? 'input-error' : ''}
+                    placeholder='exemplo@exemplo.com'
+                    {...register('email', {
+                      required: 'A gente manda cartinha pro boi de mamão',
+                    })}
+                  />
+                  {errors.email && (
+                    <small className='error-message'>{errors.email.message}</small>
+                  )}
+                </div>
+              </div>
 
+              <div className="form-row form-row-2columns">
+                <div className="form-field">
+                  <label htmlFor="">Senha *</label>
+                  <input
+                    type='password'
+                    className={errors.password ? 'input-error' : ''}
+                    placeholder='Senha'
+                    {...register('password', {
+                      required: 'Dix uma senha não vai esquecer.',
+                      minLength: 6,
+                      message: 'É Seix letrinhas no mínimo.',
+                    })}
+                  />
+                  {errors.password && (
+                    <small className='error-message'>
+                      {errors.password.message}
+                    </small>
+                  )}
+                </div>
+                <div className="form-field">
+                  <label htmlFor="">Confirme a Senha *</label>
+                  <input
+                    type='password'
+                    className={errors.confirmPassword ? 'input-error' : ''}
+                    placeholder='Confirmar senha'
+                    {...register('confirmPassword', {
+                      required: 'Oh queridu, confirma a senha.',
+                      minLength: 6,
+                      message: 'É Seix letrinhas no mínimo.',
+                    })}
+                  />
+                  {errors.confirmPassword && (
+                    <small className='error-message'>
+                      {errors.confirmPassword.message}
+                    </small>
+                  )}
+                </div>
+              </div>
+              
+              <div className='form-row'>
+                <span>Endereço</span>
+              </div>
+
+              <div className='form-row'>
+                <div className="form-field">
+                  <label htmlFor="">CEP *</label>
+                  <InputMask
+                    mask='99999-999'
+                    placeholder='99999-999'
+                    maskChar={null}
+                    {...register('zipCode', {
+                      required: 'Não amarra a cara, mas o CEP é obrigatório',
+                      pattern: /^\d{5}-\d{3}$/,
+                    })}
+                  >
+                    {(inputProps) => (
+                      <input
+                        {...inputProps}
+                        type='text'
+                        className={errors.zipCode ? 'input-error' : ''}
+                      />
+                    )}
+                  </InputMask>
+                  {errors.zipCode && (
+                    <small className='error-message'>
+                      {errors.zipCode.message}
+                    </small>
+                  )}
+                </div>
+              </div>
+
+              <div className="form-row form-row-2columns dinamicColumns">
+                <div className="form-field">
+                  <label htmlFor="">Logradouro *</label>
+                    <input
+                    type='text'
+                    className={errors.street ? 'input-error' : ''}
+                    placeholder='Rua das perobas'
+                    {...register('street', { required: 'Esqueceu da Rua?' })}
+                  />
+                  {errors.street && (
+                    <small className='error-message'>{errors.street.message}</small>
+                  )}
+                </div>
+                <div className="form-field small">
+                  <label htmlFor="">Número *</label>
+                  <input
+                    type='text'
+                    className={errors.number ? 'input-error' : ''}
+                    placeholder='123'
+                    {...register('number', {
+                      required: 'Se não tem número, coloca s/n',
+                    })}
+                  />
+                  {errors.number && (
+                    <small className='error-message'>{errors.number.message}</small>
+                  )}
+                </div>
+              </div>
+
+              <div className="form-row form-row-2columns">
+                <div className="form-field">
+                  <label htmlFor="">Complemento *</label>
+                  <input
+                    type='text'
+                    placeholder='Ao lado do mercado'
+                    {...register('complement')}
+                  />
+                </div>
+                <div className="form-field">
+                  <label htmlFor="">Bairro *</label>
+                  <input
+                    type='text'
+                    className={errors.neighborhood ? 'input-error' : ''}
+                    placeholder='Centro'
+                    {...register('neighborhood', {
+                      required: 'Os queridus querem saber da vizinhança!',
+                    })}
+                  />
+                  {errors.neighborhood && (
+                    <small className='error-message'>
+                      {errors.neighborhood.message}
+                    </small>
+                  )}
+                </div>
+              </div>
+
+                
+
+              <div className="form-row form-row-2columns dinamicColumns">
+                <div className="form-field">
+                  <label htmlFor="">Cidade *</label>
+                  <input
+                    type='text'
+                    className={errors.city ? 'input-error' : ''}
+                    placeholder='Florianópolis'
+                    {...register('city', {
+                      required: 'É em Floripa? Precisax dizer também.',
+                    })}
+                  />
+                  {errors.city && (
+                    <small className='error-message'>{errors.city.message}</small>
+                  )}
+                </div>
+                <div className="form-field small">
+                  <label htmlFor="">Estado *</label>
+                  <input
+                    type='text'
+                    maxLength={2}
+                    className={errors.state ? 'input-error' : ''}
+                    placeholder='SC'
+                    {...register('state', {
+                      required: 'Faltou aquelas duas letrinhas do exhtado',
+                    })}
+                  />
+                  {errors.state && (
+                    <small className='error-message'>{errors.state.message}</small>
+                  )}
+                </div>
+              </div>              
               <button type='submit'>Cadastrar</button>
             </form>
           </div>
