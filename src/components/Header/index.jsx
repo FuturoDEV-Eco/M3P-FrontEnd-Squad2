@@ -11,83 +11,85 @@ let isAdmin = JSON.parse(localStorage.getItem('admin'));
 let user_id = JSON.parse(localStorage.getItem('user_id'));
 function Header() {
   const { userLogout } = useContext(UsersContext);
-
+console.log(user_id)
   return (
     <header>
       <div className='header-container'>
-        <div className='logo-container'>
+        <div className={user_id === null ? 'logo-container center' : 'logo-container'}>
           <Link to='/'>
             <img src={logo} className='logo' alt='Destino certo' />{' '}
           </Link>
         </div>
-        <div className='nav-container'>
-          <nav>
-            <ul className='nav-links'>
-              <li className='dropdown'>
-                <div className='dropdown-toggle'>
-                  <FaArrowsSpin />
-                  <span>Coletas</span>
-                </div>
-                <ul className='dropdown-content'>
-                  <li>
-                    <Link to='/collectPlaces/create'>Cadastrar</Link>
-                  </li>
-                  <li>
-                    <Link to='/collectPlaces/list'>Listar</Link>
-                  </li>
-                </ul>
-              </li>
-              <li className='dropdown'>
-                <div className='dropdown-toggle'>
-                  <RiChatSmile2Line />
-                  <span className='primary'>
-                    <Link to='/regional-expressions'>Expressões</Link>{' '}
-                  </span>
-                </div>
-              </li>
-              {isAdmin && (
+        {!!user_id && (
+          <div className='nav-container'>
+            <nav>
+              <ul className='nav-links'>
                 <li className='dropdown'>
                   <div className='dropdown-toggle'>
-                    <FaGears />
-                    <span>Admin</span>
+                    <FaArrowsSpin />
+                    <span>Coletas</span>
                   </div>
                   <ul className='dropdown-content'>
                     <li>
-                      <Link to='/users/list'>Listar Usuários</Link>
+                      <Link to='/collectPlaces/create'>Cadastrar</Link>
+                    </li>
+                    <li>
+                      <Link to='/collectPlaces/list'>Listar</Link>
                     </li>
                   </ul>
                 </li>
-              )}
-              <li className='dropdown'>
-                <div className='dropdown-toggle'>
-                  <FaUserGear />
-                  <span>Perfil</span>
-                </div>
-                <ul className='dropdown-content'>
-                  <li>
-                    <Link to={`/users/edit/${user_id}`}>Editar Perfil</Link>
+                <li className='dropdown'>
+                  <div className='dropdown-toggle'>
+                    
+                    <span className='primary'>
+                      <Link to='/regional-expressions'><RiChatSmile2Line /> Expressões</Link>
+                    </span>
+                  </div>
+                </li>
+                {isAdmin && (
+                  <li className='dropdown'>
+                    <div className='dropdown-toggle'>
+                      <FaGears />
+                      <span>Admin</span>
+                    </div>
+                    <ul className='dropdown-content'>
+                      <li>
+                        <Link to='/users/list'>Listar Usuários</Link>
+                      </li>
+                    </ul>
                   </li>
-                  <li>
-                    <Link to={`/collectPlaces/listbyuser/${user_id}`}>
-                      Meus Locais
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to='#'
-                      onClick={(e) => {
-                        e.preventDefault();
-                        userLogout();
-                      }}
-                    >
-                      Sair
-                    </Link>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </nav>
-        </div>
+                )}
+                <li className='dropdown'>
+                  <div className='dropdown-toggle'>
+                    <FaUserGear />
+                    <span>Perfil</span>
+                  </div>
+                  <ul className='dropdown-content'>
+                    <li>
+                      <Link to={`/users/edit/${user_id}`}>Editar Perfil</Link>
+                    </li>
+                    <li>
+                      <Link to={`/collectPlaces/listbyuser/${user_id}`}>
+                        Meus Locais
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to='#'
+                        onClick={(e) => {
+                          e.preventDefault();
+                          userLogout();
+                        }}
+                      >
+                        Sair
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        )}
       </div>
     </header>
   );
