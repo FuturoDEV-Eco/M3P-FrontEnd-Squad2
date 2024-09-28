@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../config/api';
 export const UsersContext = createContext();
 
 export const UsersContextProvider = ({ children }) => {
@@ -20,8 +20,8 @@ export const UsersContextProvider = ({ children }) => {
 
   //para contar o numero de usuários
   const countUsers = () => {
-    axios
-      .get('http://localhost:3001/usuarios/count')
+    api
+      .get('/usuarios/count')
       .then((response) => {
         setUserCount(response.data.count);
       })
