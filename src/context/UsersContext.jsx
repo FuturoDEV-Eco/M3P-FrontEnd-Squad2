@@ -1,11 +1,14 @@
 import { createContext, useEffect, useState } from 'react';
+import axios from 'axios';
 export const UsersContext = createContext();
 
 export const UsersContextProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
+  const [userCount, setUserCount] = useState(0);
 
   useEffect(() => {
     getUsers();
+    countUsers();
   }, []);
 
   function getUsers() {
@@ -17,7 +20,14 @@ export const UsersContextProvider = ({ children }) => {
 
   //para contar o numero de usuários
   const countUsers = () => {
-    return users.length;
+    axios
+      .get('http://localhost:3001/usuarios/count')
+      .then((response) => {
+        setUserCount(response.data.count);
+      })
+      .catch((error) => {
+        console.error('Ih, agora quem foi o tanso que não sabe contar', error);
+      });
   };
 
   function createUser(user) {
@@ -206,7 +216,7 @@ export const UsersContextProvider = ({ children }) => {
         userLogout,
         getUserById,
         updateUser,
-        countUsers,
+        userCount,
         deleteUser,
         isCPFValid,
       }}
