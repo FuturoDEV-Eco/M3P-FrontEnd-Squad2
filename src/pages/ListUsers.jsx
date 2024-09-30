@@ -3,8 +3,6 @@ import { UsersContext } from '../context/UsersContext';
 import { CollectPlaceContext } from '../context/CollectPlaceContext';
 import { Link } from 'react-router-dom';
 import simbol from '../assets/favicon.png';
-import { MdEditSquare } from 'react-icons/md';
-import { MdDelete } from 'react-icons/md';
 function ListUsers() {
   const { users, deleteUser } = useContext(UsersContext);
   const { countPlacesByUserId } = useContext(CollectPlaceContext);
@@ -33,7 +31,7 @@ function ListUsers() {
       <div className='section-cards'>
         {users.map((user) => (
           <div className='cards' key={user.id}>
-            <div className='card-body'>
+            <div className='card-body flexible'>
               <div>
                 <strong>ID:</strong> {user.id}
               </div>
@@ -64,34 +62,37 @@ function ListUsers() {
                   {placeCounts ? (
                     placeCounts[user.id] > 0 ? (
                       <Link
-                        className='primary-bold'
+                        className='success'
                         to={`/collectPlaces/listbyuser/${user.id}`}
                         title='Ver coletas do usuário'
                       >
-                        {placeCounts[user.id]}
+                        {placeCounts[user.id] > 1 ? `${placeCounts[user.id]} Coletas cadastradas` : `${placeCounts[user.id]} Coleta cadastrada` }
                       </Link>
                     ) : (
-                      placeCounts[user.id] || 0
+                      `${placeCounts[user.id] || 0}  Coletas cadastradas` 
                     )
                   ) : (
                     'Carregando...'
                   )}
-                </strong>{' '}
-                coleta cadastrada
+                </strong>
               </div>
+            </div>
+            {JSON.parse(localStorage.getItem('admin')) && (
+              <>
+              <div className="divisor"></div>
               <div className='link-details-users'>
-                {JSON.parse(localStorage.getItem('admin')) && (
-                  <>
-                    <Link
-                      className='primary'
-                      to={`/users/edit/${user.id}`}
-                      title='Editar usuário'
-                    >
-                      <MdEditSquare />
-                    </Link>
-                    {placeCounts && placeCounts[user.id] === 0 && (
+                <div className='card-detail-actions'>
+                  <Link
+                    className='btn btn-primary'
+                    to={`/users/edit/${user.id}`}
+                    title='Editar usuário'
+                  >
+                    <span>Editar</span> 
+                  </Link>
+                  {placeCounts && placeCounts[user.id] === 0 && (
+                      <>
                       <Link
-                        className='danger'
+                        className='btn btn-danger'
                         to={`/users/delete/${user.id}`}
                         title='Excluir usuário'
                         onClick={(e) => {
@@ -105,13 +106,14 @@ function ListUsers() {
                           }
                         }}
                       >
-                        <MdDelete />
-                      </Link>
+                          <span>Remover</span>
+                        </Link>
+                      </>
                     )}
-                  </>
-                )}
-              </div>
-            </div>
+                  </div>                    
+                </div>
+              </>
+            )}
           </div>
         ))}
       </div>

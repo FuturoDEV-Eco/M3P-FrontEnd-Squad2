@@ -5,8 +5,6 @@ import { UsersContext } from '../context/UsersContext';
 import { Link } from 'react-router-dom';
 import { HiMapPin } from 'react-icons/hi2';
 import { FaArrowsSpin } from 'react-icons/fa6';
-import { MdEditSquare } from 'react-icons/md';
-import { MdDelete } from 'react-icons/md';
 import { FaMapLocationDot } from 'react-icons/fa6';
 import { MdTextsms } from 'react-icons/md';
 import { FaUser } from 'react-icons/fa';
@@ -144,35 +142,37 @@ function ListCollectPlaces() {
                 </div>
                 <small>{userNames[place.user_id] || 'Carregando...'}</small>
               </div>
-              <div className='card-detail-actions'>
-                {(isAdmin || loggedId === place.user_id) && (
-                  <>
-                    <Link
-                      className='primary'
-                      to={`/collectPlaces/edit/${place.id}`}
-                      title='Editar ponto de coleta'
-                    >
-                      <MdEditSquare />
-                    </Link>
-                    <Link
-                      className='danger'
-                      title='Excluir ponto de coleta'
-                      onClick={() => {
-                        if (
-                          window.confirm(
-                            'Tem certeza que deseja deletar este local de coleta?'
-                          )
-                        ) {
-                          deletePlace(place.id);
-                        }
-                      }}
-                    >
-                      <MdDelete />
-                    </Link>
-                  </>
-                )}
-              </div>
+              
             </div>
+          </div>
+          <div className="divisor"></div>
+          <div className='card-detail-actions'>
+            {(isAdmin || loggedId === place.user_id) && (
+              <>
+              <Link
+                  className='btn btn-danger'
+                  title='Excluir ponto de coleta'
+                  onClick={() => {
+                    if (
+                      window.confirm(
+                        'Tem certeza que deseja deletar este local de coleta?'
+                      )
+                    ) {
+                      deletePlace(place.id);
+                    }
+                  }}
+                >
+                  <span>Remover</span>
+                </Link>
+                <Link
+                  className='btn btn-primary'
+                  to={`/collectPlaces/edit/${place.id}`}
+                  title='Editar ponto de coleta'
+                >
+                  <span>Editar</span> 
+                </Link>
+              </>
+            )}
           </div>
         </div>
       ))}
