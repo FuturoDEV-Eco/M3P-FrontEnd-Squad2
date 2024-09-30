@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import InputMask from 'react-input-mask';
 import { UsersContext } from '../context/UsersContext';
 import { FaUserEdit } from 'react-icons/fa';
-import '../forms.css'
+import '../forms.css';
 
 let isAdmin = JSON.parse(localStorage.getItem('admin'));
 
@@ -29,7 +29,7 @@ function EditUser() {
         reset(userData);
         setTimeout(() => {
           setValue('cpf', userData.cpf, { shouldValidate: true });
-          setValue('zipCode', userData.zipCode, { shouldValidate: true });
+          setValue('postalcode', userData.postalcode, { shouldValidate: true });
         }, 50);
         setLoading(false);
       } catch (error) {
@@ -40,7 +40,7 @@ function EditUser() {
 
     fetchUserData();
   }, [id, reset, setValue, getUserById]);
-  const cep = watch('zipCode');
+  const cep = watch('postalcode');
   useEffect(() => {
     if (cep && cep.length === 9) {
       fetch(`https://viacep.com.br/ws/${cep.replace('-', '')}/json/`)
@@ -87,25 +87,26 @@ function EditUser() {
       <div className='container-form'>
         <div className='card-form'>
           <form onSubmit={handleSubmit(onSubmit)}>
-            
-            <div className="form-row">
-              <div className="form-field">
-                <label htmlFor="">Usuário *</label>
+            <div className='form-row'>
+              <div className='form-field'>
+                <label htmlFor=''>Usuário *</label>
                 <input
                   type='text'
                   className={errors.name ? 'input-error' : ''}
                   placeholder=''
-                  {...register('name', { required: 'Oh queridu o nome precisa.' })}
+                  {...register('name', {
+                    required: 'Oh queridu o nome precisa.',
+                  })}
                 />
                 {errors.name && (
                   <small className='error-message'>{errors.name.message}</small>
                 )}
               </div>
             </div>
-            
-            <div className="form-row">
-              <div className="form-field">
-                <label htmlFor="">E-mail *</label>
+
+            <div className='form-row'>
+              <div className='form-field'>
+                <label htmlFor=''>E-mail *</label>
                 <input
                   type='text'
                   className={errors.email ? 'input-error' : ''}
@@ -115,63 +116,66 @@ function EditUser() {
                   })}
                 />
                 {errors.email && (
-                  <small className='error-message'>{errors.email.message}</small>
+                  <small className='error-message'>
+                    {errors.email.message}
+                  </small>
                 )}
               </div>
             </div>
-            
-            <div className="form-row">
-              <div className="form-field">
-                <label htmlFor="">Gênero *</label>
-                <div className="gender-field">
-                <div>
-                  <label className={errors.gender ? 'input-error' : ''}>
-                    <input
-                      {...register('gender', {
-                        required: 'Se quex, quex, se não quex, dix',
-                      })}
-                      type='radio'
-                      value='M'
-                    />
-                    Masculino
-                  </label>
-                </div>
-                <div>
-                  <label className={errors.gender ? 'input-error' : ''}>
-                    <input
-                      {...register('gender', {
-                        required: 'Se quex, quex, se não quex, dix',
-                      })}
-                      type='radio'
-                      value='F'
-                    />
-                    Feminino
-                  </label>
-                </div>
-                <div>
-                  <label className={errors.gender ? 'input-error' : ''}>
-                    <input
-                      {...register('gender', {
-                        required: 'Se quex, quex, se não quex, dix',
-                      })}
-                      type='radio'
-                      value='NI'
-                    />{' '}
-                    Não informado{' '}
-                  </label>
-                </div>
-                </div>
-                
-                {errors.gender && (
-                  <small className='error-message'>{errors.gender.message}</small>
-                )}
-              </div>
-            </div>
-            
 
-            <div className="form-row form-row-2columns">
+            <div className='form-row'>
               <div className='form-field'>
-                <label htmlFor="">Documento</label>
+                <label htmlFor=''>Gênero *</label>
+                <div className='gender-field'>
+                  <div>
+                    <label className={errors.gender ? 'input-error' : ''}>
+                      <input
+                        {...register('gender', {
+                          required: 'Se quex, quex, se não quex, dix',
+                        })}
+                        type='radio'
+                        value='M'
+                      />
+                      Masculino
+                    </label>
+                  </div>
+                  <div>
+                    <label className={errors.gender ? 'input-error' : ''}>
+                      <input
+                        {...register('gender', {
+                          required: 'Se quex, quex, se não quex, dix',
+                        })}
+                        type='radio'
+                        value='F'
+                      />
+                      Feminino
+                    </label>
+                  </div>
+                  <div>
+                    <label className={errors.gender ? 'input-error' : ''}>
+                      <input
+                        {...register('gender', {
+                          required: 'Se quex, quex, se não quex, dix',
+                        })}
+                        type='radio'
+                        value='NI'
+                      />{' '}
+                      Não informado{' '}
+                    </label>
+                  </div>
+                </div>
+
+                {errors.gender && (
+                  <small className='error-message'>
+                    {errors.gender.message}
+                  </small>
+                )}
+              </div>
+            </div>
+
+            <div className='form-row form-row-2columns'>
+              <div className='form-field'>
+                <label htmlFor=''>Documento</label>
                 <InputMask
                   mask='999.999.999-99'
                   placeholder='CPF'
@@ -197,37 +201,36 @@ function EditUser() {
                 )}
               </div>
               <div className='form-field'>
-                <label htmlFor="">Data de Nascimento</label>
+                <label htmlFor=''>Data de Nascimento</label>
                 <input
                   type='date'
-                  className={errors.birthDate ? 'input-error' : ''}
-                  {...register('birthDate', {
+                  className={errors.birthdate ? 'input-error' : ''}
+                  {...register('birthdate', {
                     required: 'Dix aqui a data. Ninguém vai saber a idade.',
                   })}
                 />
-                {errors.birthDate && (
+                {errors.birthdate && (
                   <small className='error-message'>
-                    {errors.birthDate.message}
+                    {errors.birthdate.message}
                   </small>
                 )}
               </div>
             </div>
-            
 
-            <div className="divisor"></div>
-            
-            <div className="form-row">
-              <div className="form-field">
-                <label htmlFor="">CEP *</label>
+            <div className='divisor'></div>
+
+            <div className='form-row'>
+              <div className='form-field'>
+                <label htmlFor=''>CEP *</label>
                 <InputMask
                   mask='99999-999'
                   placeholder='CEP'
                   maskChar={null}
-                  {...register('zipCode', {
+                  {...register('postalcode', {
                     required: 'Não amarra a cara, mas o CEP é obrigatório',
                     pattern: /^\d{5}-\d{3}$/,
                     onBlur: (event) => {
-                      const cep = getValues('zipCode');
+                      const cep = getValues('postalcode');
                       if (cep && cep.length === 9) fetchCEP(cep);
                     },
                   })}
@@ -236,19 +239,21 @@ function EditUser() {
                     <input
                       {...inputProps}
                       type='text'
-                      className={errors.zipCode ? 'input-error' : ''}
+                      className={errors.postalcode ? 'input-error' : ''}
                     />
                   )}
                 </InputMask>
-                {errors.zipCode && (
-                  <small className='error-message'>{errors.zipCode.message}</small>
+                {errors.postalcode && (
+                  <small className='error-message'>
+                    {errors.postalcode.message}
+                  </small>
                 )}
               </div>
             </div>
 
-            <div className="form-row form-row-2columns dinamicColumns">
+            <div className='form-row form-row-2columns dinamicColumns'>
               <div className='form-field'>
-                <label htmlFor="">Rua *</label>
+                <label htmlFor=''>Rua *</label>
                 <input
                   type='text'
                   className={errors.street ? 'input-error' : ''}
@@ -256,11 +261,13 @@ function EditUser() {
                   {...register('street', { required: 'Esqueceu da Rua?' })}
                 />
                 {errors.street && (
-                  <small className='error-message'>{errors.street.message}</small>
+                  <small className='error-message'>
+                    {errors.street.message}
+                  </small>
                 )}
               </div>
               <div className='form-field small'>
-                <label htmlFor="">Número *</label>
+                <label htmlFor=''>Número *</label>
                 <input
                   type='text'
                   className={errors.number ? 'input-error' : ''}
@@ -270,14 +277,16 @@ function EditUser() {
                   })}
                 />
                 {errors.number && (
-                  <small className='error-message'>{errors.number.message}</small>
+                  <small className='error-message'>
+                    {errors.number.message}
+                  </small>
                 )}
               </div>
             </div>
 
-            <div className="form-row form-row-2columns">
+            <div className='form-row form-row-2columns'>
               <div className='form-field'>
-                <label htmlFor="">Complmento</label>
+                <label htmlFor=''>Complmento</label>
                 <input
                   type='text'
                   placeholder='Ao lado do mercado'
@@ -285,7 +294,7 @@ function EditUser() {
                 />
               </div>
               <div className='form-field'>
-                <label htmlFor="">Bairro *</label>
+                <label htmlFor=''>Bairro *</label>
                 <input
                   type='text'
                   className={errors.neighborhood ? 'input-error' : ''}
@@ -302,9 +311,9 @@ function EditUser() {
               </div>
             </div>
 
-            <div className="form-row form-row-2columns dinamicColumns">
+            <div className='form-row form-row-2columns dinamicColumns'>
               <div className='form-field'>
-                <label htmlFor="">Cidade *</label>
+                <label htmlFor=''>Cidade *</label>
                 <input
                   type='text'
                   className={errors.city ? 'input-error' : ''}
@@ -317,8 +326,8 @@ function EditUser() {
                   <small className='error-message'>{errors.city.message}</small>
                 )}
               </div>
-              <div className="form-field small">
-                <label htmlFor="">Estado *</label>
+              <div className='form-field small'>
+                <label htmlFor=''>Estado *</label>
                 <input
                   type='text'
                   className={errors.state ? 'input-error' : ''}
@@ -328,7 +337,9 @@ function EditUser() {
                   })}
                 />
                 {errors.state && (
-                  <small className='error-message'>{errors.state.message}</small>
+                  <small className='error-message'>
+                    {errors.state.message}
+                  </small>
                 )}
               </div>
             </div>

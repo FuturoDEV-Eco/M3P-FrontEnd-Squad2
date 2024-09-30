@@ -45,14 +45,14 @@ function ListUsers() {
                 <strong>CPF:</strong> {user.cpf}
               </div>
               <div className='success'>
-                <strong>Data nascimento:</strong> {user.birthDate}
+                <strong>Data nascimento:</strong> {user.birthdate}
               </div>
               <div className='success'>
                 <strong>Email:</strong> {user.email}
               </div>
               <div className='success'>
                 <strong>Endereço:</strong>{' '}
-                {`${user.street}, ${user.number} ${user.complement}, ${user.neighborhood}, ${user.city}, ${user.state}, ${user.zipCode}`}
+                {`${user.street}, ${user.number} ${user.complement}, ${user.neighborhood}, ${user.city}, ${user.state}, ${user.postalcode}`}
               </div>
               <div className='success'>
                 <strong>Administrador:</strong> {user.admin ? 'Sim' : 'Não'}
@@ -66,10 +66,12 @@ function ListUsers() {
                         to={`/collectPlaces/listbyuser/${user.id}`}
                         title='Ver coletas do usuário'
                       >
-                        {placeCounts[user.id] > 1 ? `${placeCounts[user.id]} Coletas cadastradas` : `${placeCounts[user.id]} Coleta cadastrada` }
+                        {placeCounts[user.id] > 1
+                          ? `${placeCounts[user.id]} Coletas cadastradas`
+                          : `${placeCounts[user.id]} Coleta cadastrada`}
                       </Link>
                     ) : (
-                      `${placeCounts[user.id] || 0}  Coletas cadastradas` 
+                      `${placeCounts[user.id] || 0}  Coletas cadastradas`
                     )
                   ) : (
                     'Carregando...'
@@ -79,38 +81,38 @@ function ListUsers() {
             </div>
             {JSON.parse(localStorage.getItem('admin')) && (
               <>
-              <div className="divisor"></div>
-              <div className='link-details-users'>
-                <div className='card-detail-actions'>
-                  <Link
-                    className='btn btn-primary'
-                    to={`/users/edit/${user.id}`}
-                    title='Editar usuário'
-                  >
-                    <span>Editar</span> 
-                  </Link>
-                  {placeCounts && placeCounts[user.id] === 0 && (
+                <div className='divisor'></div>
+                <div className='link-details-users'>
+                  <div className='card-detail-actions'>
+                    <Link
+                      className='btn btn-primary'
+                      to={`/users/edit/${user.id}`}
+                      title='Editar usuário'
+                    >
+                      <span>Editar</span>
+                    </Link>
+                    {placeCounts && placeCounts[user.id] === 0 && (
                       <>
-                      <Link
-                        className='btn btn-danger'
-                        to={`/users/delete/${user.id}`}
-                        title='Excluir usuário'
-                        onClick={(e) => {
-                          e.preventDefault();
-                          if (
-                            window.confirm(
-                              'Tem certeza que deseja deletar este usuário?'
-                            )
-                          ) {
-                            deleteUser(user.id);
-                          }
-                        }}
-                      >
+                        <Link
+                          className='btn btn-danger'
+                          to={`/users/delete/${user.id}`}
+                          title='Excluir usuário'
+                          onClick={(e) => {
+                            e.preventDefault();
+                            if (
+                              window.confirm(
+                                'Tem certeza que deseja deletar este usuário?'
+                              )
+                            ) {
+                              deleteUser(user.id);
+                            }
+                          }}
+                        >
                           <span>Remover</span>
                         </Link>
                       </>
                     )}
-                  </div>                    
+                  </div>
                 </div>
               </>
             )}

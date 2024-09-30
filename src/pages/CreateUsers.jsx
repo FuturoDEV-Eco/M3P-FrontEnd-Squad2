@@ -24,9 +24,10 @@ function CreateUsers() {
   } = useForm({
     defaultValues: {
       admin: false,
+      accent: 1,
     },
   });
-  const cep = watch('zipCode');
+  const cep = watch('postalcode');
   const password = watch('password');
 
   useEffect(() => {
@@ -57,6 +58,8 @@ function CreateUsers() {
     }
     defaultValues: {
       admin: false;
+      accent: 1;
+      0;
     }
     createUser(data);
   };
@@ -79,25 +82,29 @@ function CreateUsers() {
               <FaUserPlus /> <span>Se cadatra Mó Quiridu!</span>
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="form-row">
+              <div className='form-row'>
                 <span>Dados Pessoais</span>
               </div>
 
-              <div className="form-row form-row-2columns">
-                <div className="form-field">
-                  <label htmlFor="">Nome Completo</label>
+              <div className='form-row form-row-2columns'>
+                <div className='form-field'>
+                  <label htmlFor=''>Nome Completo</label>
                   <input
                     type='text'
                     className={errors.name ? 'input-error' : ''}
                     placeholder='João da Silva'
-                    {...register('name', { required: 'Oh queridu o nome precisa' })}
+                    {...register('name', {
+                      required: 'Oh queridu o nome precisa',
+                    })}
                   />
                   {errors.name && (
-                    <small className='error-message'>{errors.name.message}</small>
+                    <small className='error-message'>
+                      {errors.name.message}
+                    </small>
                   )}
                 </div>
                 <div className='form-field'>
-                  <label htmlFor="">Documento</label>
+                  <label htmlFor=''>Documento</label>
                   <InputMask
                     mask='999.999.999-99'
                     placeholder='CPF'
@@ -119,15 +126,17 @@ function CreateUsers() {
                     )}
                   </InputMask>
                   {errors.cpf && (
-                    <small className='error-message'>{errors.cpf.message}</small>
+                    <small className='error-message'>
+                      {errors.cpf.message}
+                    </small>
                   )}
                 </div>
               </div>
 
-              <div className="form-row form-row-2columns">
-                <div className="form-field">
-                  <label htmlFor="">Gênero *</label>
-                  <div className="gender-field">
+              <div className='form-row form-row-2columns'>
+                <div className='form-field'>
+                  <label htmlFor=''>Gênero *</label>
+                  <div className='gender-field'>
                     <select
                       className={errors.gender ? 'input-error' : ''}
                       {...register('gender', {
@@ -140,35 +149,37 @@ function CreateUsers() {
                       <option value='NI'>Não informado</option>
                     </select>
                   </div>
-                  
+
                   {errors.gender && (
-                    <small className='error-message'>{errors.gender.message}</small>
+                    <small className='error-message'>
+                      {errors.gender.message}
+                    </small>
                   )}
                 </div>
                 <div className='form-field'>
-                  <label htmlFor="">Data de Nascimento</label>
+                  <label htmlFor=''>Data de Nascimento</label>
                   <input
                     type='date'
-                    className={errors.birthDate ? 'input-error' : ''}
-                    {...register('birthDate', {
+                    className={errors.birthdate ? 'input-error' : ''}
+                    {...register('birthdate', {
                       required: 'Dix aqui a data. Ninguém vai saber a idade.',
                     })}
                   />
-                  {errors.birthDate && (
+                  {errors.birthdate && (
                     <small className='error-message'>
-                      {errors.birthDate.message}
+                      {errors.birthdate.message}
                     </small>
                   )}
                 </div>
               </div>
-              
-              <div className="form-row">
+
+              <div className='form-row'>
                 <span>Dados de Login</span>
               </div>
 
-              <div className="form-row">
-                <div className="form-field">
-                  <label htmlFor="">E-mail *</label>
+              <div className='form-row'>
+                <div className='form-field'>
+                  <label htmlFor=''>E-mail *</label>
                   <input
                     type='email'
                     className={errors.email ? 'input-error' : ''}
@@ -178,14 +189,16 @@ function CreateUsers() {
                     })}
                   />
                   {errors.email && (
-                    <small className='error-message'>{errors.email.message}</small>
+                    <small className='error-message'>
+                      {errors.email.message}
+                    </small>
                   )}
                 </div>
               </div>
 
-              <div className="form-row form-row-2columns">
-                <div className="form-field">
-                  <label htmlFor="">Senha *</label>
+              <div className='form-row form-row-2columns'>
+                <div className='form-field'>
+                  <label htmlFor=''>Senha *</label>
                   <input
                     type='password'
                     className={errors.password ? 'input-error' : ''}
@@ -202,8 +215,8 @@ function CreateUsers() {
                     </small>
                   )}
                 </div>
-                <div className="form-field">
-                  <label htmlFor="">Confirme a Senha *</label>
+                <div className='form-field'>
+                  <label htmlFor=''>Confirme a Senha *</label>
                   <input
                     type='password'
                     className={errors.confirmPassword ? 'input-error' : ''}
@@ -221,19 +234,19 @@ function CreateUsers() {
                   )}
                 </div>
               </div>
-              
+
               <div className='form-row'>
                 <span>Endereço</span>
               </div>
 
               <div className='form-row'>
-                <div className="form-field">
-                  <label htmlFor="">CEP *</label>
+                <div className='form-field'>
+                  <label htmlFor=''>CEP *</label>
                   <InputMask
                     mask='99999-999'
                     placeholder='99999-999'
                     maskChar={null}
-                    {...register('zipCode', {
+                    {...register('postalcode', {
                       required: 'Não amarra a cara, mas o CEP é obrigatório',
                       pattern: /^\d{5}-\d{3}$/,
                     })}
@@ -242,33 +255,35 @@ function CreateUsers() {
                       <input
                         {...inputProps}
                         type='text'
-                        className={errors.zipCode ? 'input-error' : ''}
+                        className={errors.postalcode ? 'input-error' : ''}
                       />
                     )}
                   </InputMask>
-                  {errors.zipCode && (
+                  {errors.postalcode && (
                     <small className='error-message'>
-                      {errors.zipCode.message}
+                      {errors.postalcode.message}
                     </small>
                   )}
                 </div>
               </div>
 
-              <div className="form-row form-row-2columns dinamicColumns">
-                <div className="form-field">
-                  <label htmlFor="">Logradouro *</label>
-                    <input
+              <div className='form-row form-row-2columns dinamicColumns'>
+                <div className='form-field'>
+                  <label htmlFor=''>Logradouro *</label>
+                  <input
                     type='text'
                     className={errors.street ? 'input-error' : ''}
                     placeholder='Rua das perobas'
                     {...register('street', { required: 'Esqueceu da Rua?' })}
                   />
                   {errors.street && (
-                    <small className='error-message'>{errors.street.message}</small>
+                    <small className='error-message'>
+                      {errors.street.message}
+                    </small>
                   )}
                 </div>
-                <div className="form-field small">
-                  <label htmlFor="">Número *</label>
+                <div className='form-field small'>
+                  <label htmlFor=''>Número *</label>
                   <input
                     type='text'
                     className={errors.number ? 'input-error' : ''}
@@ -278,22 +293,24 @@ function CreateUsers() {
                     })}
                   />
                   {errors.number && (
-                    <small className='error-message'>{errors.number.message}</small>
+                    <small className='error-message'>
+                      {errors.number.message}
+                    </small>
                   )}
                 </div>
               </div>
 
-              <div className="form-row form-row-2columns">
-                <div className="form-field">
-                  <label htmlFor="">Complemento *</label>
+              <div className='form-row form-row-2columns'>
+                <div className='form-field'>
+                  <label htmlFor=''>Complemento *</label>
                   <input
                     type='text'
                     placeholder='Ao lado do mercado'
                     {...register('complement')}
                   />
                 </div>
-                <div className="form-field">
-                  <label htmlFor="">Bairro *</label>
+                <div className='form-field'>
+                  <label htmlFor=''>Bairro *</label>
                   <input
                     type='text'
                     className={errors.neighborhood ? 'input-error' : ''}
@@ -310,11 +327,9 @@ function CreateUsers() {
                 </div>
               </div>
 
-                
-
-              <div className="form-row form-row-2columns dinamicColumns">
-                <div className="form-field">
-                  <label htmlFor="">Cidade *</label>
+              <div className='form-row form-row-2columns dinamicColumns'>
+                <div className='form-field'>
+                  <label htmlFor=''>Cidade *</label>
                   <input
                     type='text'
                     className={errors.city ? 'input-error' : ''}
@@ -324,11 +339,13 @@ function CreateUsers() {
                     })}
                   />
                   {errors.city && (
-                    <small className='error-message'>{errors.city.message}</small>
+                    <small className='error-message'>
+                      {errors.city.message}
+                    </small>
                   )}
                 </div>
-                <div className="form-field small">
-                  <label htmlFor="">Estado *</label>
+                <div className='form-field small'>
+                  <label htmlFor=''>Estado *</label>
                   <input
                     type='text'
                     maxLength={2}
@@ -339,10 +356,12 @@ function CreateUsers() {
                     })}
                   />
                   {errors.state && (
-                    <small className='error-message'>{errors.state.message}</small>
+                    <small className='error-message'>
+                      {errors.state.message}
+                    </small>
                   )}
                 </div>
-              </div>              
+              </div>
               <button type='submit'>Cadastrar</button>
             </form>
           </div>
