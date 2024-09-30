@@ -1,7 +1,7 @@
 import simbol from '../../assets/favicon.png';
 function Footer() {
   return (
-    <footer>
+    <footer className='container'>
       <img src={simbol} height={70} alt='Destino certo' />
       <p>
         © 2024 - Destino Certo <br />
