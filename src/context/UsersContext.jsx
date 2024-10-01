@@ -11,6 +11,10 @@ export const UsersContextProvider = ({ children }) => {
     countUsers();
   }, []);
 
+  function isUserAuthenticated() {
+    return localStorage.getItem('isLogged')
+  }
+
   function getUsers() {
     fetch('http://localhost:3000/users')
       .then((response) => response.json())
@@ -222,6 +226,7 @@ export const UsersContextProvider = ({ children }) => {
         userCount,
         deleteUser,
         isCPFValid,
+        isUserAuthenticated,
       }}
     >
       {children}
