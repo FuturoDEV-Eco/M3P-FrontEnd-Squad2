@@ -56,24 +56,27 @@ export const UsersContextProvider = ({ children }) => {
       return;
     }
 
-    fetch('http://localhost:3000/users', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(user),
-    })
+    api
+      .post('/usuarios/criar', user)
       .then(() => {
-        alert('Arrombassi! Sua conta foi criado com sucesso');
+        alert('Arrombassi! Sua conta foi criada com sucesso');
         getUsers();
         window.location.href = '/';
-        return;
       })
-      .catch(() =>
-        alert(
-          'Sabe aquele boca-moli do programador? Aquele que mora lá pelo Campeche? Pois errou de novo.'
-        )
-      );
+      .catch((error) => {
+        console.error('Erro ao criar usuário:', error);
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.error
+        ) {
+          alert(error.response.data.error);
+        } else {
+          alert(
+            'Sabe aquele boca-moli do programador? Aquele que mora lá pelo Campeche? Pois errou de novo.'
+          );
+        }
+      });
   }
 
   //valida o cpf

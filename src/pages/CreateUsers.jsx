@@ -56,11 +56,11 @@ function CreateUsers() {
       alert('Oh querido as senhas não batem!');
       return;
     }
-    defaultValues: {
-      admin: false;
-      accent: 1;
-      0;
-    }
+    // Remover confirmPassword dos dados a serem enviados
+    delete data.confirmPassword;
+    // valores padrão para criar usuários
+    data.admin = false;
+    data.accent = 1;
     createUser(data);
   };
 
