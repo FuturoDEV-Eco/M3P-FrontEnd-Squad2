@@ -68,7 +68,7 @@ function CreateUsers() {
   return (
     <div className='main'>
       <div className='container'>
-        <Header actualPage="userCreate"/>
+        <Header actualPage='userCreate' />
 
         <div className='container-form'>
           <div className='card-form'>
@@ -140,7 +140,7 @@ function CreateUsers() {
                       <option value=''>Esolha uma opção</option>
                       <option value='M'>Masculino</option>
                       <option value='F'>Feminino</option>
-                      <option value='NI'>Não informado</option>
+                      <option value='O'>Não informado</option>
                     </select>
                   </div>
 
