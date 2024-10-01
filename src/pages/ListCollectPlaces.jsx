@@ -132,7 +132,7 @@ function ListCollectPlaces() {
               <div className='card-detail-address-text'>
                 <div>{`${place.street}, ${place.number} ${place.complement}`}</div>
                 <div>{`${place.city} - ${place.state}`}</div>
-                <div>{` ${place.neighborhood} - ${place.zipCode}`}</div>
+                <div>{` ${place.neighborhood} - ${place.postalcode}`}</div>
               </div>
             </div>
             <div className='card-detail-footer'>
@@ -142,14 +142,13 @@ function ListCollectPlaces() {
                 </div>
                 <small>{userNames[place.user_id] || 'Carregando...'}</small>
               </div>
-              
             </div>
           </div>
-          <div className="divisor"></div>
+          <div className='divisor'></div>
           <div className='card-detail-actions'>
             {(isAdmin || loggedId === place.user_id) && (
               <>
-              <Link
+                <Link
                   className='btn btn-danger'
                   title='Excluir ponto de coleta'
                   onClick={() => {
@@ -169,7 +168,7 @@ function ListCollectPlaces() {
                   to={`/collectPlaces/edit/${place.id}`}
                   title='Editar ponto de coleta'
                 >
-                  <span>Editar</span> 
+                  <span>Editar</span>
                 </Link>
               </>
             )}

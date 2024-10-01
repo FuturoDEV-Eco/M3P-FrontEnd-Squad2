@@ -32,7 +32,7 @@ function DetailsCollectPlace() {
         console.error('Falha ao recuperar informações:', error);
       }
     };
-    console.log(place)
+    console.log(place);
     fetchPlaceAndUser();
   }, [id, getCollectPlaceById, getUserById]);
 
@@ -93,7 +93,7 @@ function DetailsCollectPlace() {
             <div className='card-detail-address-text'>
               <div>{`${place.street}, ${place.number} ${place.complement}`}</div>
               <div>{`${place.city} - ${place.state}`}</div>
-              <div>{` ${place.neighborhood} - ${place.zipCode}`}</div>
+              <div>{` ${place.neighborhood} - ${place.postalcode}`}</div>
             </div>
           </div>
           <div className='card-detail-footer'>
@@ -103,14 +103,13 @@ function DetailsCollectPlace() {
               </div>
               <small>{userName || 'Carregando...'}</small>
             </div>
-            
           </div>
         </div>
-        <div className="divisor"></div>
+        <div className='divisor'></div>
         <div className='card-detail-actions'>
           {(isAdmin || loggedId === place.user_id) && (
             <>
-            <Link
+              <Link
                 className='btn btn-danger'
                 title='Excluir ponto de coleta'
                 onClick={() => {
@@ -130,7 +129,7 @@ function DetailsCollectPlace() {
                 to={`/collectPlaces/edit/${place.id}`}
                 title='Editar ponto de coleta'
               >
-                <span>Editar</span> 
+                <span>Editar</span>
               </Link>
             </>
           )}

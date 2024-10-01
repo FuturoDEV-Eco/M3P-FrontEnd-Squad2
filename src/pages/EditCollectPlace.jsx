@@ -26,7 +26,9 @@ function EditCollectPlace() {
         const placeData = await getCollectPlaceById(id);
         reset(placeData);
         setTimeout(() => {
-          setValue('zipCode', placeData.zipCode, { shouldValidate: true });
+          setValue('postalcode', placeData.postalcode, {
+            shouldValidate: true,
+          });
         }, 50);
         setLoading(false);
       } catch (error) {
@@ -37,7 +39,7 @@ function EditCollectPlace() {
     fetchPlaceData();
   }, [id, reset, getCollectPlaceById]);
 
-  const cep = watch('zipCode');
+  const cep = watch('postalcode');
 
   useEffect(() => {
     if (cep && cep.length === 9) {
@@ -82,9 +84,9 @@ function EditCollectPlace() {
       <div className='container-form'>
         <div className='card-form'>
           <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="form-row">
-              <div className="form-field">
-                <label htmlFor="">Nome do ponto de coleta *</label>
+            <div className='form-row'>
+              <div className='form-field'>
+                <label htmlFor=''>Nome do ponto de coleta *</label>
                 <input
                   type='text'
                   className={errors.place ? 'input-error' : ''}
@@ -94,14 +96,16 @@ function EditCollectPlace() {
                   })}
                 />
                 {errors.place && (
-                  <small className='error-message'>{errors.place.message}</small>
+                  <small className='error-message'>
+                    {errors.place.message}
+                  </small>
                 )}
               </div>
             </div>
-            
-            <div className="form-row">
-              <div className="form-field">
-                <label htmlFor="">Tipo de Coleta *</label>
+
+            <div className='form-row'>
+              <div className='form-field'>
+                <label htmlFor=''>Tipo de Coleta *</label>
                 <select
                   className={errors.collect ? 'input-error' : ''}
                   {...register('collect', {
@@ -118,20 +122,26 @@ function EditCollectPlace() {
                   <option value='Perfurocortantes'>Perfurocortantes</option>
                   <option value='Pilhas e baterias'>Pilhas e baterias</option>
                   <option value='Plástico'>Plásticos</option>
-                  <option value='Remédios ou blisters'>Remédios ou blisters</option>
-                  <option value='Resíduos Verdes(podas)'>Resíduos Verdes(podas)</option>
+                  <option value='Remédios ou blisters'>
+                    Remédios ou blisters
+                  </option>
+                  <option value='Resíduos Verdes(podas)'>
+                    Resíduos Verdes(podas)
+                  </option>
                   <option value='Resíduos Volumosos'>Resíduos Volumosos</option>
                   <option value='Vidros'>Vidros</option>
                 </select>
                 {errors.collect && (
-                  <small className='error-message'>{errors.collect.message}</small>
+                  <small className='error-message'>
+                    {errors.collect.message}
+                  </small>
                 )}
               </div>
             </div>
 
-            <div className="form-row">
-              <div className="form-field">
-                <label htmlFor="">Descrição do local *</label>
+            <div className='form-row'>
+              <div className='form-field'>
+                <label htmlFor=''>Descrição do local *</label>
                 <textarea
                   className={errors.placeDescription ? 'input-error' : ''}
                   placeholder='Mi conta másh mó quiridu'
@@ -147,16 +157,16 @@ function EditCollectPlace() {
               </div>
             </div>
 
-            <div className="divisor"></div>
-            
-            <div className="form-row">
-              <div className="form-field">
-                <label htmlFor="">CEP *</label>
+            <div className='divisor'></div>
+
+            <div className='form-row'>
+              <div className='form-field'>
+                <label htmlFor=''>CEP *</label>
                 <InputMask
                   mask='99999-999'
                   placeholder='99999-999'
                   maskChar={null}
-                  {...register('zipCode', {
+                  {...register('postalcode', {
                     required: 'Não amarra a cara, mas o CEP é obrigatório',
                     pattern: /^\d{5}-\d{3}$/,
                   })}
@@ -165,19 +175,21 @@ function EditCollectPlace() {
                     <input
                       {...inputProps}
                       type='text'
-                      className={errors.zipCode ? 'input-error' : ''}
+                      className={errors.postalcode ? 'input-error' : ''}
                     />
                   )}
                 </InputMask>
-                {errors.zipCode && (
-                  <small className='error-message'>{errors.zipCode.message}</small>
+                {errors.postalcode && (
+                  <small className='error-message'>
+                    {errors.postalcode.message}
+                  </small>
                 )}
               </div>
             </div>
 
-            <div className="form-row form-row-2columns dinamicColumns">
+            <div className='form-row form-row-2columns dinamicColumns'>
               <div className='form-field'>
-                <label htmlFor="">Rua *</label>
+                <label htmlFor=''>Rua *</label>
                 <input
                   className={errors.street ? 'input-error' : ''}
                   type='text'
@@ -185,11 +197,13 @@ function EditCollectPlace() {
                   {...register('street', { required: 'Esqueceu da Rua?' })}
                 />
                 {errors.street && (
-                  <small className='error-message'>{errors.street.message}</small>
+                  <small className='error-message'>
+                    {errors.street.message}
+                  </small>
                 )}
               </div>
               <div className='form-field small'>
-                <label htmlFor="">Número *</label>
+                <label htmlFor=''>Número *</label>
                 <input
                   className={errors.number ? 'input-error' : ''}
                   type='text'
@@ -199,14 +213,16 @@ function EditCollectPlace() {
                   })}
                 />
                 {errors.number && (
-                  <small className='error-message'>{errors.number.message}</small>
+                  <small className='error-message'>
+                    {errors.number.message}
+                  </small>
                 )}
               </div>
             </div>
 
-            <div className="form-row form-row-2columns">
+            <div className='form-row form-row-2columns'>
               <div className='form-field'>
-                <label htmlFor="">Complemento</label>
+                <label htmlFor=''>Complemento</label>
                 <input
                   type='text'
                   placeholder='próximo ao mercado'
@@ -214,7 +230,7 @@ function EditCollectPlace() {
                 />
               </div>
               <div className='form-field'>
-                <label htmlFor="">Bairro *</label>
+                <label htmlFor=''>Bairro *</label>
                 <input
                   className={errors.neighborhood ? 'input-error' : ''}
                   type='text'
@@ -230,10 +246,10 @@ function EditCollectPlace() {
                 )}
               </div>
             </div>
-            
-            <div className="form-row form-row-2columns dinamicColumns">
+
+            <div className='form-row form-row-2columns dinamicColumns'>
               <div className='form-field'>
-                <label htmlFor="">Cidade *</label>
+                <label htmlFor=''>Cidade *</label>
                 <input
                   className={errors.city ? 'input-error' : ''}
                   type='text'
@@ -247,22 +263,24 @@ function EditCollectPlace() {
                 )}
               </div>
               <div className='form-field small'>
-                <label htmlFor="">Estado / UF *</label>
+                <label htmlFor=''>Estado / UF *</label>
                 <input
-                    maxLength={2}
-                    placeholder='SC'
-                    className={errors.state ? 'input-error' : ''}
-                    type='text'
-                    {...register('state', {
-                      required: 'Faltou aquelas duas letrinhas do eshtado',
-                    })}
-                  />
-                  {errors.state && (
-                    <small className='error-message'>{errors.state.message}</small>
-                  )}
+                  maxLength={2}
+                  placeholder='SC'
+                  className={errors.state ? 'input-error' : ''}
+                  type='text'
+                  {...register('state', {
+                    required: 'Faltou aquelas duas letrinhas do eshtado',
+                  })}
+                />
+                {errors.state && (
+                  <small className='error-message'>
+                    {errors.state.message}
+                  </small>
+                )}
               </div>
             </div>
-                
+
             <div className='form-row form-row-2columns'>
               <div className='form-field'>
                 <label>Latitude *</label>
@@ -274,7 +292,9 @@ function EditCollectPlace() {
                   })}
                 />
                 {errors.latitude && (
-                  <small className='error-message'>{errors.latitude.message}</small>
+                  <small className='error-message'>
+                    {errors.latitude.message}
+                  </small>
                 )}
               </div>
               <div className='form-field'>
