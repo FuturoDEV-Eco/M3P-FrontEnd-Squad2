@@ -9,6 +9,8 @@ import { HiMapPin } from 'react-icons/hi2';
 import { FaEye } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { FaMapLocationDot } from 'react-icons/fa6';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 function Dashboard() {
   const { places, countPlaces } = useContext(CollectPlaceContext);
@@ -36,6 +38,8 @@ function Dashboard() {
 
   return (
     <>
+    <div className="container">
+      <Header actualPage="dashboard" />
       <div className='boxes'>
         <div className='box color-place'>
           <div className='box-icon'>
@@ -150,6 +154,8 @@ function Dashboard() {
           </div>
         ))}
       </div>
+    </div>
+    <Footer />
     </>
   );
 }

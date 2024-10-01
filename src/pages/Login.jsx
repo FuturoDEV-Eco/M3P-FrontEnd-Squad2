@@ -17,7 +17,7 @@ function Login() {
   return (
     <div className='login-main'>
       <div className='container-login'>
-        <Header />
+        <Header actualPage="login"/>
         <div className='container-form'>
           <div className='card-form'>
             <span>Login</span>

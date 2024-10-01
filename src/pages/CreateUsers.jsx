@@ -10,6 +10,7 @@ import { RiCakeFill } from 'react-icons/ri';
 import { BsFillHouseFill } from 'react-icons/bs';
 import { FaLock } from 'react-icons/fa6';
 import { MdAlternateEmail } from 'react-icons/md';
+import Header from '../components/Header';
 
 function CreateUsers() {
   const { createUser } = useContext(UsersContext);
@@ -67,14 +68,7 @@ function CreateUsers() {
   return (
     <div className='main'>
       <div className='container'>
-        <div className='header-container'>
-          <div className='logo-container'>
-            <Link to='/'>
-              {' '}
-              <img src={logo} className='logo' alt='Destino certo' />{' '}
-            </Link>
-          </div>
-        </div>
+        <Header actualPage="userCreate"/>
 
         <div className='container-form'>
           <div className='card-form'>
