@@ -12,8 +12,8 @@ import { FaMapLocationDot } from 'react-icons/fa6';
 
 function Dashboard() {
   const { places, countPlaces } = useContext(CollectPlaceContext);
-  const { users, countUsers, getUserById } = useContext(UsersContext);
-  const numUsers = countUsers();
+  const { users, userCount, getUserById } = useContext(UsersContext);
+
   const numPlaces = countPlaces();
   const [userNames, setUserNames] = useState({});
 
@@ -48,7 +48,7 @@ function Dashboard() {
           <div className='box-icon'>
             <FaUsers />
           </div>
-          <div className='box-number'>{numUsers}</div>
+          <div className='box-number'>{userCount}</div>
           <div className='box-title'>Mó Quiridus</div>
         </div>
       </div>
