@@ -5,14 +5,51 @@ export const UsersContext = createContext();
 export const UsersContextProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
   const [userCount, setUserCount] = useState(0);
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     getUsers();
     countUsers();
+    checkAuthentication();
   }, []);
 
   function isUserAuthenticated() {
-    return localStorage.getItem('isLogged')
+    return currentUser !== null;
+  }
+
+  async function checkAuthentication() {
+    try {
+      const response = await api.get('/usuarios/logged-user');
+      setCurrentUser(response.data);
+    } catch (error) {
+      console.error('Usuário não autenticado:', error);
+      setCurrentUser(null);
+    }
+  }
+
+  async function userLogin(email, password) {
+    try {
+      const response = await api.post('/login', { email, password });
+
+      // Armazenar os dados do usuário no estado
+      setCurrentUser(response.data);
+
+      // Redirecionar o usuário após o login, se necessário
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Erro ao tentar fazer login:', error);
+      alert('Erro ao fazer login. Verifique suas credenciais.');
+    }
+  }
+
+  async function userLogout() {
+    try {
+      await api.post('/logout');
+      setCurrentUser(null);
+      window.location.href = '/'; // direciona para a página inicial
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+    }
   }
 
   function getUsers() {
@@ -109,44 +146,6 @@ export const UsersContextProvider = ({ children }) => {
     return true;
   }
 
-  async function userLogin(email, password) {
-    try {
-      // event loop
-      const response = await fetch('http://localhost:3000/users');
-      const data = await response.json();
-      let userFound = false;
-      data.map((user) => {
-        if (user.email == email) {
-          userFound = true;
-
-          if (user.password == password) {
-            localStorage.setItem('isLogged', true);
-            localStorage.setItem('user_id', user.id);
-            localStorage.setItem('admin', user.admin);
-            window.location.href = '/';
-            return;
-          }
-          alert('Tás Tolo! Tás? A senha é outra!');
-          return;
-        }
-      });
-      if (!userFound) {
-        alert('Esse Quiridu não está cadastrado!');
-      }
-    } catch (error) {
-      console.error('Erro ao tentar fazer login:', error);
-      alert('Sua internet mofou cas pombas na balaia');
-    }
-  }
-
-  function userLogout() {
-    localStorage.removeItem('isLogged');
-    localStorage.removeItem('user_id');
-    localStorage.removeItem('admin');
-    window.location.href = '/login';
-    return; // Redireciona o usuário para a página de login após o logout
-  }
-
   async function getUserById(id) {
     const response = await fetch(`http://localhost:3000/users/${id}`);
     if (!response.ok) {
@@ -221,6 +220,7 @@ export const UsersContextProvider = ({ children }) => {
         createUser,
         userLogin,
         userLogout,
+        currentUser,
         getUserById,
         updateUser,
         userCount,

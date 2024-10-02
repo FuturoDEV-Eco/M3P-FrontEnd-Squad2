@@ -1,4 +1,6 @@
+import React, { useContext } from 'react';
 import { Navigate, createBrowserRouter } from 'react-router-dom';
+import { UsersContext } from '../context/UsersContext';
 import App from '../App';
 import CreateUsers from '../pages/CreateUsers';
 import ListUsers from '../pages/ListUsers';
@@ -12,10 +14,10 @@ import ListCollectPlacesByUser from '../pages/ListCollectPlacesByUser';
 import DetailsCollectPlace from '../pages/DetailsCollectPlace';
 import RegionalExpressions from '../pages/RegionalExpressions';
 
-let isLogged = JSON.parse(localStorage.getItem('isLogged')) || false;
-// eslint-disable-next-line react/prop-types
 const PrivateRoute = ({ children }) => {
-  return isLogged ? children : <Navigate to='/login' />;
+  const { isUserAuthenticated } = useContext(UsersContext);
+
+  return isUserAuthenticated() ? children : <Navigate to='/login' />;
 };
 
 const routes = createBrowserRouter([
