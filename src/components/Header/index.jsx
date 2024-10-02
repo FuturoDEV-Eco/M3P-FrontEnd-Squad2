@@ -11,7 +11,7 @@ import { RiChatSmile2Line } from 'react-icons/ri';
 function Header(actualPage) {
   const { userLogout, isUserAuthenticated, currentUser } =
     useContext(UsersContext);
-  const isAdmin = currentUser ? currentUser.isAdmin : false;
+  const isAdmin = currentUser ? currentUser.admin : false;
   const user_id = currentUser ? currentUser.id : null;
   return (
     <header>
