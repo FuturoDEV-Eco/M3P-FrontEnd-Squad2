@@ -47,11 +47,21 @@ export const CollectPlaceContextProvider = ({ children }) => {
   }
 
   async function getCollectPlaceById(id) {
-    const response = await fetch(`http://localhost:3000/collectPlaces/${id}`);
-    if (!response.ok) {
-      throw new Error('Falha ao buscar local de coleta');
+    try {
+      const response = await api.get(`/local/${id}`); // Aqui usamos o `api` já configurado com axios
+      return response.data; // Retorna os dados do local de coleta
+    } catch (error) {
+      console.error('Erro ao buscar local de coleta:', error);
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.mensagem
+      ) {
+        alert(error.response.data.mensagem); // Exibe o erro retornado pelo backend
+      } else {
+        alert('O Boca-moli do programador fez algo errado!');
+      }
     }
-    return response.json();
   }
 
   async function countPlacesByUserId(user_id) {
@@ -71,17 +81,24 @@ export const CollectPlaceContextProvider = ({ children }) => {
   }
 
   async function updatePlace(id, placeData) {
-    const response = await fetch(`http://localhost:3000/collectPlaces/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(placeData),
-    });
-    if (!response.ok) {
-      throw new Error('Falha ao atualizar local de coleta');
+    try {
+      const response = await api.put(`/local/${id}`, placeData); // Usando o `api` configurado com axios
+      if (response.status === 200) {
+        alert('Local de coleta atualizado com sucesso!');
+        getPlaces(); // Atualiza a lista de locais de coleta
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar local de coleta:', error);
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.mensagem
+      ) {
+        alert(error.response.data.mensagem); // Exibe o erro retornado pelo backend
+      } else {
+        alert('O Boca-moli do programador fez algo errado!');
+      }
     }
-    getPlaces();
   }
 
   function deletePlace(id) {
