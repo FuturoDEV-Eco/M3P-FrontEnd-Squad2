@@ -3,8 +3,6 @@ import { useParams, Link } from 'react-router-dom';
 import { CollectPlaceContext } from '../context/CollectPlaceContext';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { UsersContext } from '../context/UsersContext';
-let loggedId = JSON.parse(localStorage.getItem('user_id'));
-let isAdmin = JSON.parse(localStorage.getItem('admin'));
 import { HiMapPin } from 'react-icons/hi2';
 import { FaArrowsSpin } from 'react-icons/fa6';
 import { MdEditSquare } from 'react-icons/md';
@@ -13,12 +11,13 @@ import { FaMapLocationDot } from 'react-icons/fa6';
 import { MdTextsms } from 'react-icons/md';
 import { FaUser } from 'react-icons/fa';
 import { PiWarningOctagonFill } from 'react-icons/pi';
+
 function ListCollectPlacesByUser() {
   const { user_id } = useParams();
   const { getCollectPlacesByUserId, deletePlace } =
     useContext(CollectPlaceContext);
+  const { currentUser } = useContext(UsersContext); // Acessando o currentUser diretamente
   const [userPlaces, setUserPlaces] = useState([]);
-  const { getUserById } = useContext(UsersContext);
 
   useEffect(() => {
     getCollectPlacesByUserId(user_id)
@@ -31,22 +30,6 @@ function ListCollectPlacesByUser() {
       });
   }, [user_id, getCollectPlacesByUserId]);
 
-  const [userNames, setUserNames] = useState({});
-
-  // Para pegar o nome do usuário que registrou
-  useEffect(() => {
-    userPlaces.forEach(async (place) => {
-      if (place.user_id && !userNames[place.user_id]) {
-        try {
-          const user = await getUserById(place.user_id);
-          setUserNames((prev) => ({ ...prev, [place.user_id]: user.name }));
-        } catch (error) {
-          console.error('Erro ao buscar dados do usuário', error);
-        }
-      }
-    });
-  }, [userPlaces, getUserById, userNames]);
-
   return (
     <>
       <div className='page-title align-icon'>
@@ -57,7 +40,7 @@ function ListCollectPlacesByUser() {
           <div className='card-detail-header'>
             <div className='align-icon'>
               <PiWarningOctagonFill />{' '}
-              <span>Voce não possui locais de coleta</span>
+              <span>Você não possui locais de coleta</span>
             </div>
           </div>
           <div>
@@ -71,7 +54,7 @@ function ListCollectPlacesByUser() {
             <div className='card-detail' key={place.id}>
               <div className='card-detail-header'>
                 <div className='align-icon'>
-                  <FaArrowsSpin /> <span>{place.collect}</span>
+                  <FaArrowsSpin /> <span>{place.recycle_types}</span>
                 </div>
                 <div className='align-icon'>
                   <span>
@@ -93,8 +76,8 @@ function ListCollectPlacesByUser() {
                     />
                     <Marker position={[place.latitude, place.longitude]}>
                       <Popup>
-                        <strong>{place.place}</strong> <br />
-                        <br /> {place.placeDescription}
+                        <strong>{place.name}</strong> <br />
+                        <br /> {place.description}
                       </Popup>
                     </Marker>
                   </MapContainer>
@@ -104,14 +87,16 @@ function ListCollectPlacesByUser() {
                   <div className='card-detail-subtitle align-icon'>
                     <MdTextsms /> <span> Ó-lhó-lhó</span>
                   </div>
-                  {place.place} <br /> {place.placeDescription}
+                  {place.name} <br /> {place.description}
                 </div>
                 <div className='card-detail-address'>
                   <div className='card-detail-subtitle align-icon'>
                     <FaMapLocationDot /> <span>Segue reto toda vida</span>
                   </div>
                   <div className='card-detail-address-text'>
-                    <div>{`${place.street}, ${place.number} ${place.complement}`}</div>
+                    <div>{`${place.street}, ${place.number} ${
+                      place.complement || ''
+                    }`}</div>
                     <div>{`${place.city} - ${place.state}`}</div>
                     <div>{` ${place.neighborhood} - ${place.postalcode}`}</div>
                   </div>
@@ -121,13 +106,18 @@ function ListCollectPlacesByUser() {
                     <div className='card-detail-subtitle align-icon'>
                       <FaUser /> <span>Mó Quiridu</span>
                     </div>
-                    <small>{userNames[place.user_id] || 'Carregando...'}</small>
+                    <small>
+                      {/* Exibindo o nome do usuário autenticado a partir do currentUser */}
+                      {currentUser
+                        ? currentUser.name
+                        : 'Usuário não identificado'}
+                    </small>
                   </div>
                 </div>
               </div>
               <div className='divisor'></div>
               <div className='card-detail-actions'>
-                {(isAdmin || loggedId === place.user_id) && (
+                {(currentUser?.admin || currentUser?.id === place.user_id) && (
                   <>
                     <Link
                       className='btn btn-danger'

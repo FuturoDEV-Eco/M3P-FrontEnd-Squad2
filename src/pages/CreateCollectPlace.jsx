@@ -119,8 +119,6 @@ function CreatePlaces() {
   }, [cep, setValue]);
 
   const onSubmit = (data) => {
-    console.log('Dados enviados para criação:', data);
-    delete data.id; // Remover o campo id, caso esteja presente
     data.user_id = currentUser?.id;
     createPlace(data);
     reset(); // limpa o formulário após enviar

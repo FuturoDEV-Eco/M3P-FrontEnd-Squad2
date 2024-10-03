@@ -116,14 +116,27 @@ export const CollectPlaceContextProvider = ({ children }) => {
       );
   }
   // locais de coleta por usuário
-  async function getCollectPlacesByUserId(user_id) {
-    const response = await fetch(
-      `http://localhost:3000/collectPlaces?user_id=${user_id}`
-    );
-    if (!response.ok) {
-      throw new Error('Falha ao buscar locais de coleta');
+  async function getCollectPlacesByUserId() {
+    try {
+      // Faz a requisição usando o `axios` configurado (que já envia o token automaticamente)
+      const response = await api.get('/local');
+
+      // Retorna os dados dos pontos de coleta
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao buscar locais de coleta:', error);
+
+      // Verifica se o backend retornou uma mensagem específica de erro
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.mensagem
+      ) {
+        alert(error.response.data.mensagem); // Exibe o erro retornado pelo backend
+      } else {
+        alert('O Boca-moli do programador fez algo errado!'); // Exibe uma mensagem genérica
+      }
     }
-    return response.json();
   }
 
   return (
