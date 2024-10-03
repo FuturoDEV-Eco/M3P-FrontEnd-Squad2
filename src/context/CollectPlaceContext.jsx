@@ -101,19 +101,19 @@ export const CollectPlaceContextProvider = ({ children }) => {
     }
   }
 
-  function deletePlace(id) {
-    fetch(`http://localhost:3000/collectPlaces/${id}`, {
-      method: 'DELETE',
-    })
-      .then(() => {
-        alert('Em dois toques acabou com o ponto de coleta');
-        getPlaces(); // Atualiza a lista após a exclusão
-      })
-      .catch(() =>
-        alert(
-          'O Mandrião do programador fez algo errado de novo! Erro ao deletar o local de coleta'
-        )
+  async function deletePlace(id) {
+    try {
+      // Fazendo a requisição DELETE usando axios
+      await api.delete(`/local/${id}`);
+
+      alert('Em dois toques acabou com o ponto de coleta');
+      getPlaces(); // Atualiza a lista após a exclusão
+    } catch (error) {
+      console.error('Erro ao deletar o local de coleta:', error);
+      alert(
+        'O Mandrião do programador fez algo errado de novo! Erro ao deletar o local de coleta'
       );
+    }
   }
   // locais de coleta por usuário
   async function getCollectPlacesByUserId() {
