@@ -1,25 +1,35 @@
 import { createContext, useState, useEffect } from 'react';
+import api from '../config/api';
 
 export const CollectPlaceContext = createContext();
 
 export const CollectPlaceContextProvider = ({ children }) => {
   const [places, setPlaces] = useState([]);
+  const [placeCount, setPlaceCount] = useState(0);
 
   useEffect(() => {
     getPlaces();
+    countPlaces();
   }, []);
-  
-  function getPlaces() {
-    fetch('http://localhost:3000/collectPlaces')
-      .then((response) => response.json())
-      .then((data) => setPlaces(data))
-      .catch((error) => console.log(error));
+
+  async function getPlaces() {
+    try {
+      const response = await api.get('/local/all'); // Rota pública
+      setPlaces(response.data);
+    } catch (error) {
+      console.error('Erro ao obter locais de coleta:', error);
+    }
   }
 
   //para contar o numero de pontos de coleta
-  const countPlaces = () => {
-    return places.length;
-  };
+  async function countPlaces() {
+    try {
+      const response = await api.get('/local/count-all');
+      setPlaceCount(response.data.count); // Atualiza o estado placeCount
+    } catch (error) {
+      console.error('Erro ao contar os pontos de coleta:', error);
+    }
+  }
 
   function createPlace(place) {
     fetch('http://localhost:3000/collectPlaces', {
@@ -108,7 +118,7 @@ export const CollectPlaceContextProvider = ({ children }) => {
         updatePlace,
         getCollectPlacesByUserId,
         deletePlace,
-        countPlaces,
+        placeCount,
         countPlacesByUserId,
       }}
     >
