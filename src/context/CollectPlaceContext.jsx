@@ -31,19 +31,19 @@ export const CollectPlaceContextProvider = ({ children }) => {
     }
   }
 
-  function createPlace(place) {
-    fetch('http://localhost:3000/collectPlaces', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(place),
-    })
-      .then(() => {
-        alert('Matasse a pau! Local de coleta criado com sucesso!');
-        getPlaces();
-      })
-      .catch(() => alert('O Boca-moli do programador fez algo errado!'));
+  async function createPlace(place) {
+    try {
+      await api.post('/local', place);
+      alert('Dáx um banho!  As tartarugas agradecem o novo ponto de coleta!');
+      getPlaces();
+    } catch (error) {
+      console.error('Erro ao criar local de coleta:', error);
+      if (error.response && error.response.data && error.response.data.error) {
+        alert(error.response.data.error); // Exibe o erro retornado pelo backend
+      } else {
+        alert('O Boca-moli do programador fez algo errado!');
+      }
+    }
   }
 
   async function getCollectPlaceById(id) {

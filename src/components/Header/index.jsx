@@ -13,6 +13,7 @@ function Header(actualPage) {
     useContext(UsersContext);
   const isAdmin = currentUser ? currentUser.admin : false;
   const user_id = currentUser ? currentUser.id : null;
+
   return (
     <header>
       <div className='header-container'>
@@ -29,23 +30,25 @@ function Header(actualPage) {
             <img src={logo} className='logo' alt='Destino certo' />
           </Link>
         </div>
-        {!isUserAuthenticated() && actualPage.actualPage === 'dashboard' && (
-          <div className='nav-container'>
-            <nav>
-              <ul className='nav-links'>
-                <li className='dropdown'>
-                  <div className='dropdown-toggle flex-end'>
-                    <span className='primary'>
-                      <Link to='/login'>
-                        <FaUser /> Login/Cadastro
-                      </Link>
-                    </span>
-                  </div>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        )}
+        {!isUserAuthenticated() &&
+          currentUser === null &&
+          actualPage.actualPage === 'dashboard' && (
+            <div className='nav-container'>
+              <nav>
+                <ul className='nav-links'>
+                  <li className='dropdown'>
+                    <div className='dropdown-toggle flex-end'>
+                      <span className='primary'>
+                        <Link to='/login'>
+                          <FaUser /> Login/Cadastro
+                        </Link>
+                      </span>
+                    </div>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          )}
         {isUserAuthenticated() && (
           <div className='nav-container'>
             <nav>

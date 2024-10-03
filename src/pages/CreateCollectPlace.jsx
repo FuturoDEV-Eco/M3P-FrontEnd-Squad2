@@ -2,13 +2,15 @@ import { useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import InputMask from 'react-input-mask';
 import { CollectPlaceContext } from '../context/CollectPlaceContext';
+import { UsersContext } from '../context/UsersContext';
 import { useNavigate } from 'react-router-dom';
 import { RiMapPinAddFill } from 'react-icons/ri';
 import '../forms.css';
 
 function CreatePlaces() {
-  let user_id = JSON.parse(localStorage.getItem('user_id'));
   const { createPlace } = useContext(CollectPlaceContext);
+  const { currentUser } = useContext(UsersContext);
+
   const navigate = useNavigate();
   const {
     register,
@@ -19,17 +21,64 @@ function CreatePlaces() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      user_id: user_id, // aqui vanda user_id como default após recuperar do localStorage
-      collect: '',
+      user_id: currentUser?.id, // aqui vanda user_id como default após recuperar do localStorage
+      recycle_types: '',
     },
   });
 
   const cep = watch('postalcode');
 
+  //  SE QUISER USAR A API DO GOOGLE PARA ENCONTRAR A LATITUDE E LONGITUDE DO CEP USE O USER EFFECT ABAIXO:
+  // NÃO ESQUEÇA DE RENOMEAR O .ENVE-EXAMPLE PARA .ENV E INFORMAR SUA API KEY
+  // useEffect(() => {
+  //   if (cep && cep.length === 9) {
+  //     const apikey = import.meta.env.VITE_GEOCODEAPIKEY;
+  //     // CEP completo com máscara
+  //     fetch(`https://viacep.com.br/ws/${cep.replace('-', '')}/json/`)
+  //       .then((response) => response.json())
+  //       .then((data) => {
+  //         if (!data.erro) {
+  //           setValue('street', data.logradouro);
+  //           setValue('neighborhood', data.bairro);
+  //           setValue('city', data.localidade);
+  //           setValue('state', data.uf);
+  //         } else {
+  //           alert('Não amarrar a cara, mas o CEP não foi encontrado');
+  //         }
+  //       })
+  //       .catch((error) =>
+  //         console.error('Que tanso esse programador, erro ao buscar CEP', error)
+  //       );
+  //     fetch(
+  //       `https://api.opencagedata.com/geocode/v1/json?q=${cep}&key=${apikey}`
+  //     )
+  //       .then((response) => response.json())
+  //       .then((data) => {
+  //         if (data.results.length > 0) {
+  //           const { lat, lng } = data.results[0].geometry;
+  //           setValue('latitude', lat);
+  //           setValue('longitude', lng);
+  //         } else {
+  //           console.error('Nenhum resultado encontrado para o CEP fornecido.');
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.error('Erro ao obter dados de geolocalização:', error);
+  //       });
+  //   }
+  // }, [cep, setValue]);
+
   useEffect(() => {
     if (cep && cep.length === 9) {
-      const apikey = import.meta.env.VITE_GEOCODEAPIKEY;
-      // CEP completo com máscara
+      // Limpa os campos antes de buscar novos dados
+      setValue('street', '');
+      setValue('neighborhood', '');
+      setValue('city', '');
+      setValue('state', '');
+      setValue('latitude', '');
+      setValue('longitude', '');
+
+      // Procurar o endereço com o ViaCEP
       fetch(`https://viacep.com.br/ws/${cep.replace('-', '')}/json/`)
         .then((response) => response.json())
         .then((data) => {
@@ -45,15 +94,20 @@ function CreatePlaces() {
         .catch((error) =>
           console.error('Que tanso esse programador, erro ao buscar CEP', error)
         );
+
+      // Substituindo OpenCageData pela Nominatim OpenStreetMap para geolocalização
       fetch(
-        `https://api.opencagedata.com/geocode/v1/json?q=${cep}&key=${apikey}`
+        `https://nominatim.openstreetmap.org/search?format=json&countrycodes=BR&limit=1&postalcode=${cep.replace(
+          '-',
+          ''
+        )}`
       )
         .then((response) => response.json())
         .then((data) => {
-          if (data.results.length > 0) {
-            const { lat, lng } = data.results[0].geometry;
+          if (data.length > 0) {
+            const { lat, lon } = data[0];
             setValue('latitude', lat);
-            setValue('longitude', lng);
+            setValue('longitude', lon);
           } else {
             console.error('Nenhum resultado encontrado para o CEP fornecido.');
           }
@@ -65,9 +119,13 @@ function CreatePlaces() {
   }, [cep, setValue]);
 
   const onSubmit = (data) => {
+    console.log('Dados enviados para criação:', data);
+    delete data.id; // Remover o campo id, caso esteja presente
+    data.user_id = currentUser?.id;
     createPlace(data);
     reset(); // limpa o formulário após enviar
-    navigate('/collectPlaces/listbyuser/' + user_id);
+    navigate('/collectPlaces/list');
+    // navigate('/collectPlaces/listbyuser/' + user_id);
   };
 
   return (
@@ -83,16 +141,14 @@ function CreatePlaces() {
                 <label htmlFor=''>Nome do ponto de coleta *</label>
                 <input
                   type='text'
-                  className={errors.place ? 'input-error' : ''}
+                  className={errors.name ? 'input-error' : ''}
                   placeholder='Ponto de coleta do Centro'
-                  {...register('place', {
+                  {...register('name', {
                     required: 'Dásh um nome para o ponto de coleta',
                   })}
                 />
-                {errors.place && (
-                  <small className='error-message'>
-                    {errors.place.message}
-                  </small>
+                {errors.name && (
+                  <small className='error-message'>{errors.name.message}</small>
                 )}
               </div>
             </div>
@@ -101,8 +157,8 @@ function CreatePlaces() {
               <div className='form-field'>
                 <label htmlFor=''>Tipo de Coleta *</label>
                 <select
-                  className={errors.collect ? 'input-error' : ''}
-                  {...register('collect', {
+                  className={errors.recycle_types ? 'input-error' : ''}
+                  {...register('recycle_types', {
                     required: 'Os queridus querem saber o que coleta',
                   })}
                 >
@@ -125,9 +181,9 @@ function CreatePlaces() {
                   <option value='Resíduos Volumosos'>Resíduos Volumosos</option>
                   <option value='Vidros'>Vidros</option>
                 </select>
-                {errors.collect && (
+                {errors.recycle_types && (
                   <small className='error-message'>
-                    {errors.collect.message}
+                    {errors.recycle_types.message}
                   </small>
                 )}
               </div>
@@ -137,15 +193,15 @@ function CreatePlaces() {
               <div className='form-field'>
                 <label htmlFor=''>Descrição do local *</label>
                 <textarea
-                  className={errors.placeDescription ? 'input-error' : ''}
+                  className={errors.description ? 'input-error' : ''}
                   placeholder='Mi conta másh mó quiridu'
-                  {...register('placeDescription', {
+                  {...register('description', {
                     required: 'Aproveita e fala sobre o local',
                   })}
                 />
-                {errors.placeDescription && (
+                {errors.description && (
                   <small className='error-message'>
-                    {errors.placeDescription.message}
+                    {errors.description.message}
                   </small>
                 )}
               </div>
