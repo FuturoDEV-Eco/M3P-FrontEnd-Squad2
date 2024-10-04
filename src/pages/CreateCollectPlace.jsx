@@ -75,8 +75,6 @@ function CreatePlaces() {
       setValue('neighborhood', '');
       setValue('city', '');
       setValue('state', '');
-      setValue('latitude', '');
-      setValue('longitude', '');
 
       // Procurar o endereço com o ViaCEP
       fetch(`https://viacep.com.br/ws/${cep.replace('-', '')}/json/`)
@@ -106,10 +104,13 @@ function CreatePlaces() {
         .then((data) => {
           if (data.length > 0) {
             const { lat, lon } = data[0];
+            // Só seta latitude e longitude se a pesquisa retornar valores
             setValue('latitude', lat);
             setValue('longitude', lon);
           } else {
-            console.error('Nenhum resultado encontrado para o CEP fornecido.');
+            console.log(
+              'Nenhum resultado encontrado, o usuário pode informar manualmente.'
+            );
           }
         })
         .catch((error) => {

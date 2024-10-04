@@ -1,13 +1,21 @@
-import { useContext } from 'react';
-import { Link, useLocation } from 'react-router-dom'; // Adicionando useLocation para verificar a rota atual
+import { useContext, useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { UsersContext } from '../../context/UsersContext';
 import logo from '../../assets/destinoCerto.png';
 import { FaArrowsSpin, FaUserGear, FaUser } from 'react-icons/fa6';
 import { RiChatSmile2Line } from 'react-icons/ri';
 
 function Header(actualPage) {
-  const { userLogout, isUserAuthenticated, currentUser } =
-    useContext(UsersContext);
+  const {
+    userLogout,
+    isUserAuthenticated,
+    currentUser,
+    countUserCollectionPoints,
+    deleteUser,
+  } = useContext(UsersContext);
+
+  const [collectionPointsCount, setCollectionPointsCount] = useState(0);
+
   const isAdmin = currentUser ? currentUser.admin : false;
   const user_id = currentUser ? currentUser.id : null;
 
@@ -16,6 +24,29 @@ function Header(actualPage) {
   // Verifica se a rota atual é a página de login ou cadastro
   const isLoginOrRegisterPage =
     location.pathname === '/login' || location.pathname === '/users/create';
+
+  useEffect(() => {
+    if (isUserAuthenticated()) {
+      // Chama a função para contar os pontos de coleta
+      countUserCollectionPoints().then((count) => {
+        setCollectionPointsCount(count);
+      });
+    }
+  }, [isUserAuthenticated]);
+
+  const handleDeleteAccount = () => {
+    // Verifica se o usuário tem pontos de coleta antes de permitir a deleção
+    if (collectionPointsCount > 0) {
+      alert(
+        'ôh feio! O queridu tem pontos de coleta ainda. Nós não podemos te mandar embora assim.'
+      );
+      return;
+    }
+
+    if (window.confirm('Táis certo disso? ')) {
+      deleteUser(user_id); // Chama deleteUser
+    }
+  };
 
   return (
     <header>
@@ -81,9 +112,24 @@ function Header(actualPage) {
                         <Link to={`/users/edit/${user_id}`}>Editar Perfil</Link>
                       </li>
                       <li>
-                        <Link to={`/collectPlaces/listbyuser/${user_id}`}>
-                          Meus Locais
-                        </Link>
+                        {collectionPointsCount > 0 ? (
+                          <Link to={`/collectPlaces/listbyuser/${user_id}`}>
+                            Meus Locais: {collectionPointsCount} pontos
+                          </Link>
+                        ) : (
+                          <Link to='/collectPlaces/create'>
+                            Cadastrar Ponto
+                          </Link>
+                        )}
+                      </li>
+                      <li>
+                        <button
+                          className='btn btn-danger'
+                          title='Excluir conta'
+                          onClick={handleDeleteAccount}
+                        >
+                          <span>Encerrar conta</span>
+                        </button>
                       </li>
                       <li>
                         <Link
