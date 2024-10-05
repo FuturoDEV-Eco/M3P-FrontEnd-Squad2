@@ -41,7 +41,6 @@ export const UsersContextProvider = ({ children }) => {
         });
 
         const decoded = jwtDecode(token); // Decodifica o token
-        console.log('Token decodificado:', decoded); // Exibe o token decodificado no console
 
         setDecodedToken(decoded); // Armazena o token decodificado
       } catch (error) {
@@ -59,16 +58,14 @@ export const UsersContextProvider = ({ children }) => {
       const response = await api.post('/login', { email, password });
 
       const token = response.data.token;
-      console.log('Token recebido:', token); // Verifica se o token está correto
 
-      localStorage.setItem('authToken', token); // Salva o token no localStorage
+      localStorage.setItem('authToken', token);
 
-      const decoded = jwtDecode(token); // Decodifica o token
-      console.log('Token decodificado:', decoded); // Verifica o conteúdo do token decodificado
+      const decoded = jwtDecode(token);
 
-      setDecodedToken(decoded); // Armazena o token decodificado
+      setDecodedToken(decoded);
 
-      window.location.href = '/'; // Redireciona para a página inicial
+      window.location.href = '/';
     } catch (error) {
       console.error('Erro ao tentar fazer login:', error);
       alert('Erro ao fazer login. Verifique suas credenciais.');
@@ -92,6 +89,26 @@ export const UsersContextProvider = ({ children }) => {
       setUserCount(response.data.count);
     } catch (error) {
       console.error('Ih, agora quem foi o tanso que não sabe contar', error);
+    }
+  }
+
+  async function getUsers() {
+    try {
+      if (!decodedToken || !decodedToken.admin) {
+        throw new Error(
+          'Acesso negado. Apenas administradores podem acessar a lista de usuários.'
+        );
+      }
+
+      const response = await api.get('/users-list-all');
+      setUsers(response.data); // Atualiza o estado com a lista de usuários
+    } catch (error) {
+      console.error('Erro ao obter a lista de usuários:', error);
+      if (error.response && error.response.status === 403) {
+        alert('Você não tem permissão para acessar esta lista.');
+      } else {
+        alert('Erro ao carregar a lista de usuários.');
+      }
     }
   }
 
@@ -227,8 +244,6 @@ export const UsersContextProvider = ({ children }) => {
       // Chamada à API para atualizar os dados do usuário
       const response = await api.put('/usuarios/logged-user', userData);
 
-      // Sucesso na atualização
-      console.log('Usuário atualizado com sucesso:', response.data);
       return true;
     } catch (error) {
       // Tratamento de erro na atualização
@@ -254,30 +269,34 @@ export const UsersContextProvider = ({ children }) => {
 
   async function deleteUser(id) {
     try {
-      // Verifica se o usuário tem pontos de coleta usando countUserCollectionPoints
+      // Verifica se o usuário tem pontos de coleta
       const collectionPointsCount = await countUserCollectionPoints();
 
-      // Se o usuário tiver pontos de coleta, bloqueia a deleção
       if (collectionPointsCount > 0) {
-        alert(
-          'ôh feio! O queridu tem pontos de coleta ainda. Nós não podemos te mandar embora assim.'
-        );
+        alert('Ôh feio! O queridu tem pontos de coleta ainda.');
         return;
       }
 
-      // Se não tiver pontos de coleta, permite a deleção
-      await api.delete(`/usuarios/${id}`);
-      alert('Em dois toques deletou o queridu!');
-      getUsers();
+      // Deleta o usuário
+      const response = await api.delete(`/usuarios/${id}`);
 
-      // Após deletar o usuário, faz logout
-      await api.post('/logout');
-      window.location.href = '/'; // Redireciona para a página inicial após logout
+      if (response.status === 200) {
+        alert('Em dois toques deletou o queridu!');
+
+        // Se o usuário não for admin, realiza logout e redireciona
+        if (!decodedToken.admin) {
+          localStorage.removeItem('authToken'); // Remove o token
+          window.location.href = '/'; // Redireciona para a página inicial
+        } else {
+          // Se for admin, atualiza a lista de usuários
+          await getUsers(); // Atualiza os usuários
+        }
+      } else {
+        alert('Falha ao deletar o usuário.');
+      }
     } catch (error) {
       console.error('Erro ao deletar usuário:', error);
-      alert(
-        'Sabe aquele boca-moli do programador? Aquele que mora lá pelo Campeche? Pois errou de novo. Não deletou o queridu.'
-      );
+      alert('Erro ao tentar deletar o queridu.');
     }
   }
 

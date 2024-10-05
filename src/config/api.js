@@ -16,7 +16,6 @@ api.interceptors.request.use(
   (config) => {
     const token = getToken();
     if (token) {
-      console.log('Token JWT enviado:', token); // Verifica se o token está sendo adicionado corretamente
       config.headers['Authorization'] = `Bearer ${token}`;
     }
     return config;

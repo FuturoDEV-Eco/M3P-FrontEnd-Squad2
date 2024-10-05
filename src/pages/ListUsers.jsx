@@ -5,17 +5,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import simbol from '../assets/favicon.png';
 
 function ListUsers() {
-  const { users, deleteUser, currentUser } = useContext(UsersContext);
+  const { users, deleteUser, decodedToken } = useContext(UsersContext);
   const { countPlacesByUserId } = useContext(CollectPlaceContext);
   const [placeCounts, setPlaceCounts] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     // Redireciona para a página inicial se o usuário não for administrador
-    if (!currentUser || !currentUser.admin) {
+    if (!decodedToken || !decodedToken.admin) {
       navigate('/');
     }
-  }, [currentUser, navigate]);
+  }, [decodedToken, navigate]);
 
   useEffect(() => {
     const loadPlaceCounts = async () => {
@@ -29,7 +29,7 @@ function ListUsers() {
     if (users.length > 0) {
       loadPlaceCounts();
     }
-  }, [users]);
+  }, [users, countPlacesByUserId]);
 
   return (
     <>
@@ -61,7 +61,9 @@ function ListUsers() {
               </div>
               <div className='success'>
                 <strong>Endereço:</strong>{' '}
-                {`${user.street}, ${user.number} ${user.complement}, ${user.neighborhood}, ${user.city}, ${user.state}, ${user.postalcode}`}
+                {`${user.street}, ${user.number} ${user.complement || ''}, ${
+                  user.neighborhood
+                }, ${user.city}, ${user.state}, ${user.postalcode}`}
               </div>
               <div className='success'>
                 <strong>Administrador:</strong> {user.admin ? 'Sim' : 'Não'}
@@ -88,7 +90,7 @@ function ListUsers() {
                 </strong>
               </div>
             </div>
-            {currentUser && currentUser.admin && (
+            {decodedToken && decodedToken.admin && (
               <>
                 <div className='divisor'></div>
                 <div className='link-details-users'>
