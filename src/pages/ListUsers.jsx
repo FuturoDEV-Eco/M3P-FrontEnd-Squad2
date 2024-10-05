@@ -1,12 +1,21 @@
 import { useContext, useEffect, useState } from 'react';
 import { UsersContext } from '../context/UsersContext';
 import { CollectPlaceContext } from '../context/CollectPlaceContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import simbol from '../assets/favicon.png';
+
 function ListUsers() {
-  const { users, deleteUser } = useContext(UsersContext);
+  const { users, deleteUser, currentUser } = useContext(UsersContext);
   const { countPlacesByUserId } = useContext(CollectPlaceContext);
-  const [placeCounts, setPlaceCounts] = useState(null); // Inicializa como null
+  const [placeCounts, setPlaceCounts] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Redireciona para a página inicial se o usuário não for administrador
+    if (!currentUser || !currentUser.admin) {
+      navigate('/');
+    }
+  }, [currentUser, navigate]);
 
   useEffect(() => {
     const loadPlaceCounts = async () => {
@@ -14,13 +23,13 @@ function ListUsers() {
       for (const user of users) {
         counts[user.id] = await countPlacesByUserId(user.id);
       }
-      setPlaceCounts(counts); // Atualiza os contadores para cada usuário
+      setPlaceCounts(counts);
     };
 
     if (users.length > 0) {
       loadPlaceCounts();
     }
-  }, [users]); // Dependência do useEffect são os usuários
+  }, [users]);
 
   return (
     <>
@@ -71,7 +80,7 @@ function ListUsers() {
                           : `${placeCounts[user.id]} Coleta cadastrada`}
                       </Link>
                     ) : (
-                      `${placeCounts[user.id] || 0}  Coletas cadastradas`
+                      `${placeCounts[user.id] || 0} Coletas cadastradas`
                     )
                   ) : (
                     'Carregando...'
@@ -79,7 +88,7 @@ function ListUsers() {
                 </strong>
               </div>
             </div>
-            {JSON.parse(localStorage.getItem('admin')) && (
+            {currentUser && currentUser.admin && (
               <>
                 <div className='divisor'></div>
                 <div className='link-details-users'>
@@ -92,25 +101,23 @@ function ListUsers() {
                       <span>Editar</span>
                     </Link>
                     {placeCounts && placeCounts[user.id] === 0 && (
-                      <>
-                        <Link
-                          className='btn btn-danger'
-                          to={`/users/delete/${user.id}`}
-                          title='Excluir usuário'
-                          onClick={(e) => {
-                            e.preventDefault();
-                            if (
-                              window.confirm(
-                                'Tem certeza que deseja deletar este usuário?'
-                              )
-                            ) {
-                              deleteUser(user.id);
-                            }
-                          }}
-                        >
-                          <span>Remover</span>
-                        </Link>
-                      </>
+                      <Link
+                        className='btn btn-danger'
+                        to={`/users/delete/${user.id}`}
+                        title='Excluir usuário'
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (
+                            window.confirm(
+                              'Tem certeza que deseja deletar este usuário?'
+                            )
+                          ) {
+                            deleteUser(user.id);
+                          }
+                        }}
+                      >
+                        <span>Remover</span>
+                      </Link>
                     )}
                   </div>
                 </div>

@@ -9,7 +9,7 @@ import '../forms.css';
 
 function CreatePlaces() {
   const { createPlace } = useContext(CollectPlaceContext);
-  const { currentUser } = useContext(UsersContext);
+  const { decodedToken } = useContext(UsersContext); // Usando decodedToken no lugar de currentUser
 
   const navigate = useNavigate();
   const {
@@ -21,52 +21,12 @@ function CreatePlaces() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      user_id: currentUser?.id, // aqui vanda user_id como default após recuperar do localStorage
+      user_id: decodedToken?.id, // Usando o id do usuário decodificado do token
       recycle_types: '',
     },
   });
 
   const cep = watch('postalcode');
-
-  //  SE QUISER USAR A API DO GOOGLE PARA ENCONTRAR A LATITUDE E LONGITUDE DO CEP USE O USER EFFECT ABAIXO:
-  // NÃO ESQUEÇA DE RENOMEAR O .ENVE-EXAMPLE PARA .ENV E INFORMAR SUA API KEY
-  // useEffect(() => {
-  //   if (cep && cep.length === 9) {
-  //     const apikey = import.meta.env.VITE_GEOCODEAPIKEY;
-  //     // CEP completo com máscara
-  //     fetch(`https://viacep.com.br/ws/${cep.replace('-', '')}/json/`)
-  //       .then((response) => response.json())
-  //       .then((data) => {
-  //         if (!data.erro) {
-  //           setValue('street', data.logradouro);
-  //           setValue('neighborhood', data.bairro);
-  //           setValue('city', data.localidade);
-  //           setValue('state', data.uf);
-  //         } else {
-  //           alert('Não amarrar a cara, mas o CEP não foi encontrado');
-  //         }
-  //       })
-  //       .catch((error) =>
-  //         console.error('Que tanso esse programador, erro ao buscar CEP', error)
-  //       );
-  //     fetch(
-  //       `https://api.opencagedata.com/geocode/v1/json?q=${cep}&key=${apikey}`
-  //     )
-  //       .then((response) => response.json())
-  //       .then((data) => {
-  //         if (data.results.length > 0) {
-  //           const { lat, lng } = data.results[0].geometry;
-  //           setValue('latitude', lat);
-  //           setValue('longitude', lng);
-  //         } else {
-  //           console.error('Nenhum resultado encontrado para o CEP fornecido.');
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.error('Erro ao obter dados de geolocalização:', error);
-  //       });
-  //   }
-  // }, [cep, setValue]);
 
   useEffect(() => {
     if (cep && cep.length === 9) {
@@ -120,11 +80,10 @@ function CreatePlaces() {
   }, [cep, setValue]);
 
   const onSubmit = (data) => {
-    data.user_id = currentUser?.id;
+    data.user_id = decodedToken?.id; // Enviando o id do usuário decodificado do token
     createPlace(data);
-    reset(); // limpa o formulário após enviar
+    reset(); // Limpa o formulário após enviar
     navigate('/collectPlaces/list');
-    // navigate('/collectPlaces/listbyuser/' + user_id);
   };
 
   return (

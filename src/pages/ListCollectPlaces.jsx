@@ -7,41 +7,22 @@ import { HiMapPin } from 'react-icons/hi2';
 import { FaArrowsSpin } from 'react-icons/fa6';
 import { FaMapLocationDot } from 'react-icons/fa6';
 import { MdTextsms } from 'react-icons/md';
-import { FaUser } from 'react-icons/fa';
-import { FaEye } from 'react-icons/fa';
+import { FaUser, FaEye } from 'react-icons/fa';
 
 function ListCollectPlaces() {
   const { places, deletePlace } = useContext(CollectPlaceContext);
   const { currentUser } = useContext(UsersContext);
-  console.log('Current User:', currentUser);
-  console.log('Places:', places);
-  const { getUserById } = useContext(UsersContext);
+
   const MapLink = ({ placeId, children }) => (
     <Link to={`/collectPlaces/details/${placeId}`}>{children}</Link>
   );
-  // esse useState vai armazenar o nome do usuário que registrou o local de coleta
-  const [userNames, setUserNames] = useState({});
-
-  // Para pegar o nome do usuário que registrou
-  useEffect(() => {
-    places.forEach(async (place) => {
-      if (place.user_id && !userNames[place.user_id]) {
-        try {
-          const user = await getUserById(place.user_id);
-          setUserNames((prev) => ({ ...prev, [place.user_id]: user.name }));
-        } catch (error) {
-          console.error('Erro ao buscar dados do usuário', error);
-        }
-      }
-    });
-  }, [places, getUserById, userNames]);
 
   return (
     <>
       <div className='page-title align-icon'>
         <HiMapPin /> <span>Locais de coleta</span>
       </div>
-      {/* mapa com todos locais */}
+      {/* Mapa com todos locais */}
       <div className='card-detail'>
         <div className='card-detail-header'>
           <div className='align-icon'>
@@ -56,7 +37,7 @@ function ListCollectPlaces() {
         <div className='card-detail-body'>
           <div className='card-detail-map'>
             <MapContainer
-              center={[-27.6626, -48.49987]} // cordenadas iniciais para o mapa
+              center={[-27.6626, -48.49987]} // Coordenadas iniciais para o mapa
               zoom={10}
               scrollWheelZoom={true}
               style={{ height: '400px', width: '100%' }}
@@ -133,7 +114,7 @@ function ListCollectPlaces() {
               <div className='card-detail-address-text'>
                 <div>{`${place.street}, ${place.number} ${place.complement}`}</div>
                 <div>{`${place.city} - ${place.state}`}</div>
-                <div>{` ${place.neighborhood} - ${place.postalcode}`}</div>
+                <div>{`${place.neighborhood} - ${place.postalcode}`}</div>
               </div>
             </div>
             <div className='card-detail-footer'>
@@ -142,7 +123,6 @@ function ListCollectPlaces() {
                   <FaUser /> <span>Mó Quiridu</span>
                 </div>
                 <small>
-                  {' '}
                   {place.user && place.user.name
                     ? place.user.name
                     : 'Usuário desconhecido'}

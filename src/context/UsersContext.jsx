@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState } from 'react';
+import { jwtDecode } from 'jwt-decode'; // Corrigido para jwtDecode
 import api from '../config/api';
 
 export const UsersContext = createContext();
@@ -6,30 +7,50 @@ export const UsersContext = createContext();
 export const UsersContextProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
   const [userCount, setUserCount] = useState(0);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [decodedToken, setDecodedToken] = useState(null);
 
   useEffect(() => {
     checkAuthentication();
     countUsers();
   }, []);
 
-  useEffect(() => {
-    if (currentUser && currentUser.admin) {
-      getUsers();
-    }
-  }, [currentUser]);
-
   function isUserAuthenticated() {
-    return currentUser !== null;
+    return !!localStorage.getItem('authToken');
+  }
+
+  function getDecodedToken() {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      try {
+        const decoded = jwtDecode(token); // Uso correto de jwtDecode
+        return decoded;
+      } catch (error) {
+        console.error('Erro ao decodificar token:', error);
+        return null;
+      }
+    }
+    return null;
   }
 
   async function checkAuthentication() {
-    try {
-      const response = await api.get('/usuarios/logged-user');
-      setCurrentUser(response.data);
-    } catch (error) {
-      console.error('Usuário não autenticado:', error);
-      setCurrentUser(null);
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      try {
+        const response = await api.get('/usuarios/logged-user', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const decoded = jwtDecode(token); // Decodifica o token
+        console.log('Token decodificado:', decoded); // Exibe o token decodificado no console
+
+        setDecodedToken(decoded); // Armazena o token decodificado
+      } catch (error) {
+        console.error('Usuário não autenticado:', error);
+        localStorage.removeItem('authToken');
+        setDecodedToken(null);
+      }
+    } else {
+      setDecodedToken(null);
     }
   }
 
@@ -37,11 +58,17 @@ export const UsersContextProvider = ({ children }) => {
     try {
       const response = await api.post('/login', { email, password });
 
-      // Armazenar os dados do usuário no estado
-      setCurrentUser(response.data);
+      const token = response.data.token;
+      console.log('Token recebido:', token); // Verifica se o token está correto
 
-      // Redirecionar o usuário após o login, se necessário
-      window.location.href = '/';
+      localStorage.setItem('authToken', token); // Salva o token no localStorage
+
+      const decoded = jwtDecode(token); // Decodifica o token
+      console.log('Token decodificado:', decoded); // Verifica o conteúdo do token decodificado
+
+      setDecodedToken(decoded); // Armazena o token decodificado
+
+      window.location.href = '/'; // Redireciona para a página inicial
     } catch (error) {
       console.error('Erro ao tentar fazer login:', error);
       alert('Erro ao fazer login. Verifique suas credenciais.');
@@ -50,20 +77,11 @@ export const UsersContextProvider = ({ children }) => {
 
   async function userLogout() {
     try {
-      await api.post('/logout');
-      setCurrentUser(null);
-      window.location.href = '/'; // direciona para a página inicial
+      localStorage.removeItem('authToken'); // Remover o token do localStorage
+      setDecodedToken(null);
+      window.location.href = '/'; // Redireciona para a página inicial
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
-    }
-  }
-
-  async function getUsers() {
-    try {
-      const response = await api.get('/usuarios');
-      setUsers(response.data);
-    } catch (error) {
-      console.error('Erro ao obter usuários:', error);
     }
   }
 
@@ -173,8 +191,6 @@ export const UsersContextProvider = ({ children }) => {
   }
 
   async function updateCurrentUser(userData) {
-    const userId = currentUser.id;
-
     // Validações
     if (!userData.name || userData.name.trim() === '') {
       alert('O Querido deixa saberem quem tu és');
@@ -188,17 +204,19 @@ export const UsersContextProvider = ({ children }) => {
       alert('Não amarrar a cara, mas o CPF tá errado.');
       return false;
     }
-    // Verificação de duplicidade de CPF
-    const existingCPF = users.find(
-      (u) => u.cpf === userData.cpf && Number(u.id) !== Number(userId)
+
+    // Validação de duplicidade de CPF (Se necessário, caso tenha a lista de usuários localmente)
+    const existingCPF = users?.find(
+      (u) => u.cpf === userData.cpf && u.id !== decodedToken?.id
     );
     if (existingCPF) {
       alert('Já tem um queridu com este CPF');
       return false;
     }
-    // Verificação de duplicidade de email
-    const existingEmail = users.find(
-      (u) => u.email === userData.email && Number(u.id) !== Number(userId)
+
+    // Validação de duplicidade de email (Se necessário, caso tenha a lista de usuários localmente)
+    const existingEmail = users?.find(
+      (u) => u.email === userData.email && u.id !== decodedToken?.id
     );
     if (existingEmail) {
       alert('Já tem um queridu com este E-mail.');
@@ -206,11 +224,14 @@ export const UsersContextProvider = ({ children }) => {
     }
 
     try {
+      // Chamada à API para atualizar os dados do usuário
       const response = await api.put('/usuarios/logged-user', userData);
-      setCurrentUser(response.data);
-      await getUsers();
+
+      // Sucesso na atualização
+      console.log('Usuário atualizado com sucesso:', response.data);
       return true;
     } catch (error) {
+      // Tratamento de erro na atualização
       console.error('Erro ao atualizar usuário:', error);
       return false;
     }
@@ -222,7 +243,7 @@ export const UsersContextProvider = ({ children }) => {
     }
     try {
       const response = await api.get(
-        `/usuarios/${currentUser.id}/count-collect-points`
+        `/usuarios/${decodedToken.id}/count-collect-points`
       );
       return response.data.count;
     } catch (error) {
@@ -292,16 +313,15 @@ export const UsersContextProvider = ({ children }) => {
         createUser,
         userLogin,
         userLogout,
-        currentUser,
         getUserById,
-        updateCurrentUser,
         updateUser,
         userCount,
         deleteUser,
         isCPFValid,
         isUserAuthenticated,
-        getUsers,
         countUserCollectionPoints,
+        updateCurrentUser,
+        decodedToken,
       }}
     >
       {children}
