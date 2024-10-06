@@ -14,6 +14,12 @@ export const UsersContextProvider = ({ children }) => {
     countUsers();
   }, []);
 
+  useEffect(() => {
+    if (decodedToken && decodedToken.admin) {
+      getUsers();
+    }
+  }, [decodedToken]);
+
   function isUserAuthenticated() {
     return !!localStorage.getItem('authToken');
   }
@@ -100,8 +106,8 @@ export const UsersContextProvider = ({ children }) => {
         );
       }
 
-      const response = await api.get('/users-list-all');
-      setUsers(response.data); // Atualiza o estado com a lista de usuários
+      const response = await api.get('/usuarios/users-list-all');
+      setUsers(response.data);
     } catch (error) {
       console.error('Erro ao obter a lista de usuários:', error);
       if (error.response && error.response.status === 403) {

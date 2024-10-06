@@ -1,13 +1,10 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { UsersContext } from '../context/UsersContext';
-import { CollectPlaceContext } from '../context/CollectPlaceContext';
 import { Link, useNavigate } from 'react-router-dom';
 import simbol from '../assets/favicon.png';
 
 function ListUsers() {
   const { users, deleteUser, decodedToken } = useContext(UsersContext);
-  const { countPlacesByUserId } = useContext(CollectPlaceContext);
-  const [placeCounts, setPlaceCounts] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,20 +13,6 @@ function ListUsers() {
       navigate('/');
     }
   }, [decodedToken, navigate]);
-
-  useEffect(() => {
-    const loadPlaceCounts = async () => {
-      const counts = {};
-      for (const user of users) {
-        counts[user.id] = await countPlacesByUserId(user.id);
-      }
-      setPlaceCounts(counts);
-    };
-
-    if (users.length > 0) {
-      loadPlaceCounts();
-    }
-  }, [users, countPlacesByUserId]);
 
   return (
     <>
@@ -70,22 +53,18 @@ function ListUsers() {
               </div>
               <div className='success'>
                 <strong>
-                  {placeCounts ? (
-                    placeCounts[user.id] > 0 ? (
-                      <Link
-                        className='success'
-                        to={`/collectPlaces/listbyuser/${user.id}`}
-                        title='Ver coletas do usuário'
-                      >
-                        {placeCounts[user.id] > 1
-                          ? `${placeCounts[user.id]} Coletas cadastradas`
-                          : `${placeCounts[user.id]} Coleta cadastrada`}
-                      </Link>
-                    ) : (
-                      `${placeCounts[user.id] || 0} Coletas cadastradas`
-                    )
+                  {user.collectionPoints.length > 0 ? (
+                    <Link
+                      className='success'
+                      to={`/collectPlaces/listbyuser/${user.id}`}
+                      title='Ver coletas do usuário'
+                    >
+                      {user.collectionPoints.length > 1
+                        ? `${user.collectionPoints.length} Coletas cadastradas`
+                        : `${user.collectionPoints.length} Coleta cadastrada`}
+                    </Link>
                   ) : (
-                    'Carregando...'
+                    '0 Coletas cadastradas'
                   )}
                 </strong>
               </div>
@@ -102,7 +81,7 @@ function ListUsers() {
                     >
                       <span>Editar</span>
                     </Link>
-                    {placeCounts && placeCounts[user.id] === 0 && (
+                    {user.collectionPoints.length === 0 && (
                       <Link
                         className='btn btn-danger'
                         to={`/users/delete/${user.id}`}

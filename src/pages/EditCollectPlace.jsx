@@ -25,11 +25,16 @@ function EditCollectPlace() {
       try {
         const placeData = await getCollectPlaceById(id);
         reset(placeData);
+
+        // Usando um timeout para garantir que o valor mascarado seja aplicado corretamente
         setTimeout(() => {
-          setValue('postalcode', placeData.postalcode, {
-            shouldValidate: true,
-          });
-        }, 50);
+          setValue(
+            'postalcode',
+            placeData.postalcode.replace(/(\d{5})(\d{3})/, '$1-$2'),
+            { shouldValidate: true }
+          );
+        }, 100); // Timeout maior para garantir que o CEP seja inserido corretamente
+
         setLoading(false);
       } catch (error) {
         console.error('Erro ao carregar dados do local de coleta:', error);
@@ -37,7 +42,7 @@ function EditCollectPlace() {
       }
     }
     fetchPlaceData();
-  }, [id, reset, getCollectPlaceById]);
+  }, [id, reset, getCollectPlaceById, setValue]);
 
   const cep = watch('postalcode');
 
@@ -56,12 +61,12 @@ function EditCollectPlace() {
         .then((response) => response.json())
         .then((data) => {
           if (!data.erro) {
-            setValue('street', data.logradouro);
-            setValue('neighborhood', data.bairro);
-            setValue('city', data.localidade);
-            setValue('state', data.uf);
+            setValue('street', data.logradouro || '');
+            setValue('neighborhood', data.bairro || '');
+            setValue('city', data.localidade || '');
+            setValue('state', data.uf || '');
           } else {
-            alert('Não amarrar a cara, mas o CEP não foi encontrado');
+            alert('Não amarrar a cara, mas o CEP não foi encontrado.');
           }
         })
         .catch((error) =>
@@ -97,7 +102,7 @@ function EditCollectPlace() {
         ...data,
         postalcode: data.postalcode.replace('-', ''), // Removendo a máscara
       };
-      await updatePlace(id, data);
+      await updatePlace(id, formattedData);
       alert('Dazumbanho! O local de coleta atualizou certinho!');
       navigate(`/collectPlaces/details/${id}`);
     } catch (error) {
@@ -146,7 +151,7 @@ function EditCollectPlace() {
                     required: 'Os queridus querem saber o que coleta',
                   })}
                 >
-                  <option value=''>Esolha uma opção</option>
+                  <option value=''>Escolha uma opção</option>
                   <option value='Animais Mortos'>Animais Mortos</option>
                   <option value='Caixa de Gordura'>Caixa de Gordura</option>
                   <option value='Cápsulas de café'>Cápsulas de café</option>
@@ -177,7 +182,7 @@ function EditCollectPlace() {
               <div className='form-field'>
                 <label htmlFor=''>Descrição do local *</label>
                 <textarea
-                  className={errors.placeDescription ? 'input-error' : ''}
+                  className={errors.description ? 'input-error' : ''}
                   placeholder='Mi conta másh mó quiridu'
                   {...register('description', {
                     required: 'Aproveita e fala sobre o local',
@@ -256,14 +261,6 @@ function EditCollectPlace() {
 
             <div className='form-row form-row-2columns'>
               <div className='form-field'>
-                <label htmlFor=''>Complemento</label>
-                <input
-                  type='text'
-                  placeholder='próximo ao mercado'
-                  {...register('complement')}
-                />
-              </div>
-              <div className='form-field'>
                 <label htmlFor=''>Bairro *</label>
                 <input
                   className={errors.neighborhood ? 'input-error' : ''}
@@ -278,6 +275,15 @@ function EditCollectPlace() {
                     {errors.neighborhood.message}
                   </small>
                 )}
+              </div>
+
+              <div className='form-field'>
+                <label htmlFor=''>Complemento</label>
+                <input
+                  type='text'
+                  placeholder='próximo ao mercado'
+                  {...register('complement')}
+                />
               </div>
             </div>
 
@@ -355,4 +361,5 @@ function EditCollectPlace() {
     </div>
   );
 }
+
 export default EditCollectPlace;
