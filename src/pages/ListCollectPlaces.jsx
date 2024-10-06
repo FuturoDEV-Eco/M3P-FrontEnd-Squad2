@@ -10,10 +10,11 @@ import { MdTextsms } from 'react-icons/md';
 import { FaUser } from 'react-icons/fa';
 import { FaEye } from 'react-icons/fa';
 
-let loggedId = JSON.parse(localStorage.getItem('user_id'));
-let isAdmin = JSON.parse(localStorage.getItem('admin'));
 function ListCollectPlaces() {
   const { places, deletePlace } = useContext(CollectPlaceContext);
+  const { currentUser } = useContext(UsersContext);
+  console.log('Current User:', currentUser);
+  console.log('Places:', places);
   const { getUserById } = useContext(UsersContext);
   const MapLink = ({ placeId, children }) => (
     <Link to={`/collectPlaces/details/${placeId}`}>{children}</Link>
@@ -70,8 +71,8 @@ function ListCollectPlaces() {
                   position={[place.latitude, place.longitude]}
                 >
                   <Popup>
-                    <strong>{place.place}</strong> <br />
-                    <br /> {place.placeDescription}
+                    <strong>{place.name}</strong> <br />
+                    <br /> {place.description}
                     <br />
                     <br />
                     <MapLink placeId={place.id}>
@@ -89,7 +90,7 @@ function ListCollectPlaces() {
         <div className='card-detail' key={place.id}>
           <div className='card-detail-header'>
             <div className='align-icon'>
-              <FaArrowsSpin /> <span>{place.collect}</span>
+              <FaArrowsSpin /> <span>{place.recycle_types}</span>
             </div>
             <div className='align-icon'>
               <span>
@@ -111,8 +112,8 @@ function ListCollectPlaces() {
                 />
                 <Marker position={[place.latitude, place.longitude]}>
                   <Popup>
-                    <strong>{place.place}</strong> <br />
-                    <br /> {place.placeDescription}
+                    <strong>{place.name}</strong> <br />
+                    <br /> {place.description}
                   </Popup>
                 </Marker>
               </MapContainer>
@@ -122,8 +123,8 @@ function ListCollectPlaces() {
               <div className='card-detail-subtitle align-icon'>
                 <MdTextsms /> <span>Ó-lhó-lhó</span>
               </div>
-              {place.place} <br />
-              <small> {place.placeDescription}</small>
+              {place.name} <br />
+              <small> {place.description}</small>
             </div>
             <div className='card-detail-address'>
               <div className='card-detail-subtitle align-icon'>
@@ -140,38 +141,44 @@ function ListCollectPlaces() {
                 <div className='card-detail-subtitle align-icon'>
                   <FaUser /> <span>Mó Quiridu</span>
                 </div>
-                <small>{userNames[place.user_id] || 'Carregando...'}</small>
+                <small>
+                  {' '}
+                  {place.user && place.user.name
+                    ? place.user.name
+                    : 'Usuário desconhecido'}
+                </small>
               </div>
             </div>
           </div>
           <div className='divisor'></div>
           <div className='card-detail-actions'>
-            {(isAdmin || loggedId === place.user_id) && (
-              <>
-                <Link
-                  className='btn btn-danger'
-                  title='Excluir ponto de coleta'
-                  onClick={() => {
-                    if (
-                      window.confirm(
-                        'Tem certeza que deseja deletar este local de coleta?'
-                      )
-                    ) {
-                      deletePlace(place.id);
-                    }
-                  }}
-                >
-                  <span>Remover</span>
-                </Link>
-                <Link
-                  className='btn btn-primary'
-                  to={`/collectPlaces/edit/${place.id}`}
-                  title='Editar ponto de coleta'
-                >
-                  <span>Editar</span>
-                </Link>
-              </>
-            )}
+            {currentUser &&
+              (currentUser.admin || currentUser.id === place.user_id) && (
+                <>
+                  <Link
+                    className='btn btn-danger'
+                    title='Excluir ponto de coleta'
+                    onClick={() => {
+                      if (
+                        window.confirm(
+                          'Tem certeza que deseja deletar este local de coleta?'
+                        )
+                      ) {
+                        deletePlace(place.id);
+                      }
+                    }}
+                  >
+                    <span>Remover</span>
+                  </Link>
+                  <Link
+                    className='btn btn-primary'
+                    to={`/collectPlaces/edit/${place.id}`}
+                    title='Editar ponto de coleta'
+                  >
+                    <span>Editar</span>
+                  </Link>
+                </>
+              )}
           </div>
         </div>
       ))}

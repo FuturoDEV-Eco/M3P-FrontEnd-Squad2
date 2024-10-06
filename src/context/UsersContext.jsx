@@ -1,40 +1,84 @@
 import { createContext, useEffect, useState } from 'react';
 import api from '../config/api';
+
 export const UsersContext = createContext();
 
 export const UsersContextProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
   const [userCount, setUserCount] = useState(0);
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    getUsers();
+    checkAuthentication();
     countUsers();
   }, []);
 
+  useEffect(() => {
+    if (currentUser && currentUser.admin) {
+      getUsers();
+    }
+  }, [currentUser]);
+
   function isUserAuthenticated() {
-    return localStorage.getItem('isLogged')
+    return currentUser !== null;
   }
 
-  function getUsers() {
-    fetch('http://localhost:3000/users')
-      .then((response) => response.json())
-      .then((data) => setUsers(data))
-      .catch((error) => console.log(error));
+  async function checkAuthentication() {
+    try {
+      const response = await api.get('/usuarios/logged-user');
+      setCurrentUser(response.data);
+    } catch (error) {
+      console.error('Usuário não autenticado:', error);
+      setCurrentUser(null);
+    }
   }
 
-  //para contar o numero de usuários
-  const countUsers = () => {
-    api
-      .get('/usuarios/count')
-      .then((response) => {
-        setUserCount(response.data.count);
-      })
-      .catch((error) => {
-        console.error('Ih, agora quem foi o tanso que não sabe contar', error);
-      });
-  };
+  async function userLogin(email, password) {
+    try {
+      const response = await api.post('/login', { email, password });
 
-  function createUser(user) {
+      // Armazenar os dados do usuário no estado
+      setCurrentUser(response.data);
+
+      // Redirecionar o usuário após o login, se necessário
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Erro ao tentar fazer login:', error);
+      alert('Erro ao fazer login. Verifique suas credenciais.');
+    }
+  }
+
+  async function userLogout() {
+    try {
+      await api.post('/logout');
+      setCurrentUser(null);
+      window.location.href = '/'; // direciona para a página inicial
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+    }
+  }
+
+  async function getUsers() {
+    try {
+      const response = await api.get('/usuarios');
+      setUsers(response.data);
+    } catch (error) {
+      console.error('Erro ao obter usuários:', error);
+    }
+  }
+
+  // Para contar o número de usuários
+  async function countUsers() {
+    try {
+      const response = await api.get('/usuarios/count');
+      setUserCount(response.data.count);
+    } catch (error) {
+      console.error('Ih, agora quem foi o tanso que não sabe contar', error);
+    }
+  }
+
+  async function createUser(user) {
+    // Validações
     if (!user.name || user.name.trim() === '') {
       alert('O Querido deixa saberem quem tu és');
       return;
@@ -47,40 +91,175 @@ export const UsersContextProvider = ({ children }) => {
       alert('Não amarrar a cara, mas o CPF tá errado');
       return;
     }
-    // valida se já existe o cpf
-    const existingUser = users.find((u) => u.cpf === user.cpf);
-    if (existingUser) {
+    // Validação de duplicidade de CPF
+    const existingCPF = users.find((u) => u.cpf === user.cpf);
+    if (existingCPF) {
       alert('Já tem um queridu com este CPF.');
       return;
     }
-    // validar o email tb já que é usado para login
-    const existingEmail = users.find((m) => m.email === user.email);
+    // Validação de duplicidade de email
+    const existingEmail = users.find((u) => u.email === user.email);
     if (existingEmail) {
       alert('Já tem um queridu com este E-mail.');
       return;
     }
 
-    fetch('http://localhost:3000/users', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(user),
-    })
-      .then(() => {
-        alert('Arrombassi! Sua conta foi criado com sucesso');
-        getUsers();
-        window.location.href = '/';
-        return;
-      })
-      .catch(() =>
+    try {
+      await api.post('/usuarios/criar', user);
+      alert('Arrombassi! Sua conta foi criada com sucesso');
+      getUsers();
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Erro ao criar usuário:', error);
+      if (error.response && error.response.data && error.response.data.error) {
+        alert(error.response.data.error);
+      } else {
         alert(
           'Sabe aquele boca-moli do programador? Aquele que mora lá pelo Campeche? Pois errou de novo.'
-        )
-      );
+        );
+      }
+    }
   }
 
-  //valida o cpf
+  async function getUserById(id) {
+    try {
+      const response = await api.get(`/usuarios/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao obter usuário por ID:', error);
+      throw error;
+    }
+  }
+
+  async function updateUser(userId, userData) {
+    // Validações
+    if (!userData.name || userData.name.trim() === '') {
+      alert('O Querido deixa saberem quem tu és');
+      return false;
+    }
+    if (!userData.cpf || userData.cpf.trim() === '') {
+      alert('Aqueles números do CPF. Não tem? Coloca ai!');
+      return false;
+    }
+    if (!isCPFValid(userData.cpf)) {
+      alert('Não amarrar a cara, mas o CPF tá errado.');
+      return false;
+    }
+    // Verificação de duplicidade de CPF
+    const existingCPF = users.find(
+      (u) => u.cpf === userData.cpf && Number(u.id) !== Number(userId)
+    );
+    if (existingCPF) {
+      alert('Já tem um queridu com este CPF');
+      return false;
+    }
+    // Verificação de duplicidade de email
+    const existingEmail = users.find(
+      (u) => u.email === userData.email && Number(u.id) !== Number(userId)
+    );
+    if (existingEmail) {
+      alert('Já tem um queridu com este E-mail.');
+      return false;
+    }
+
+    try {
+      await api.put(`/usuarios/${userId}`, userData);
+      await getUsers(); // Atualiza a lista de usuários após a atualização
+      return true;
+    } catch (error) {
+      console.error('Erro ao atualizar usuário:', error);
+      return false;
+    }
+  }
+
+  async function updateCurrentUser(userData) {
+    const userId = currentUser.id;
+
+    // Validações
+    if (!userData.name || userData.name.trim() === '') {
+      alert('O Querido deixa saberem quem tu és');
+      return false;
+    }
+    if (!userData.cpf || userData.cpf.trim() === '') {
+      alert('Aqueles números do CPF. Não tem? Coloca ai!');
+      return false;
+    }
+    if (!isCPFValid(userData.cpf)) {
+      alert('Não amarrar a cara, mas o CPF tá errado.');
+      return false;
+    }
+    // Verificação de duplicidade de CPF
+    const existingCPF = users.find(
+      (u) => u.cpf === userData.cpf && Number(u.id) !== Number(userId)
+    );
+    if (existingCPF) {
+      alert('Já tem um queridu com este CPF');
+      return false;
+    }
+    // Verificação de duplicidade de email
+    const existingEmail = users.find(
+      (u) => u.email === userData.email && Number(u.id) !== Number(userId)
+    );
+    if (existingEmail) {
+      alert('Já tem um queridu com este E-mail.');
+      return false;
+    }
+
+    try {
+      const response = await api.put('/usuarios/logged-user', userData);
+      setCurrentUser(response.data);
+      await getUsers();
+      return true;
+    } catch (error) {
+      console.error('Erro ao atualizar usuário:', error);
+      return false;
+    }
+  }
+
+  async function countUserCollectionPoints() {
+    if (!isUserAuthenticated()) {
+      return 0; // Retorna 0 se o usuário não estiver autenticado
+    }
+    try {
+      const response = await api.get(
+        `/usuarios/${currentUser.id}/count-collect-points`
+      );
+      return response.data.count;
+    } catch (error) {
+      console.error('Erro ao contar pontos de coleta do usuário:', error);
+      return 0;
+    }
+  }
+
+  async function deleteUser(id) {
+    try {
+      // Verifica se o usuário tem pontos de coleta usando countUserCollectionPoints
+      const collectionPointsCount = await countUserCollectionPoints();
+
+      // Se o usuário tiver pontos de coleta, bloqueia a deleção
+      if (collectionPointsCount > 0) {
+        alert(
+          'ôh feio! O queridu tem pontos de coleta ainda. Nós não podemos te mandar embora assim.'
+        );
+        return;
+      }
+
+      // Se não tiver pontos de coleta, permite a deleção
+      await api.delete(`/usuarios/${id}`);
+      alert('Em dois toques deletou o queridu!');
+      getUsers();
+
+      // Após deletar o usuário, faz logout
+      await api.post('/logout');
+      window.location.href = '/'; // Redireciona para a página inicial após logout
+    } catch (error) {
+      console.error('Erro ao deletar usuário:', error);
+      alert(
+        'Sabe aquele boca-moli do programador? Aquele que mora lá pelo Campeche? Pois errou de novo. Não deletou o queridu.'
+      );
+    }
+  }
+
   function isCPFValid(cpf) {
     cpf = cpf.replace(/[^\d]+/g, '');
     if (cpf.length !== 11) return false;
@@ -106,111 +285,6 @@ export const UsersContextProvider = ({ children }) => {
     return true;
   }
 
-  async function userLogin(email, password) {
-    try {
-      // event loop
-      const response = await fetch('http://localhost:3000/users');
-      const data = await response.json();
-      let userFound = false;
-      data.map((user) => {
-        if (user.email == email) {
-          userFound = true;
-
-          if (user.password == password) {
-            localStorage.setItem('isLogged', true);
-            localStorage.setItem('user_id', user.id);
-            localStorage.setItem('admin', user.admin);
-            window.location.href = '/';
-            return;
-          }
-          alert('Tás Tolo! Tás? A senha é outra!');
-          return;
-        }
-      });
-      if (!userFound) {
-        alert('Esse Quiridu não está cadastrado!');
-      }
-    } catch (error) {
-      console.error('Erro ao tentar fazer login:', error);
-      alert('Sua internet mofou cas pombas na balaia');
-    }
-  }
-
-  function userLogout() {
-    localStorage.removeItem('isLogged');
-    localStorage.removeItem('user_id');
-    localStorage.removeItem('admin');
-    window.location.href = '/login';
-    return; // Redireciona o usuário para a página de login após o logout
-  }
-
-  async function getUserById(id) {
-    const response = await fetch(`http://localhost:3000/users/${id}`);
-    if (!response.ok) {
-      throw new Error('Falha ao buscar usuário');
-    }
-    return response.json();
-  }
-
-  async function updateUser(id, userData) {
-    if (!userData.name || userData.name.trim() === '') {
-      alert('O Querido deixa saberem quem tu és');
-      return false;
-    }
-    if (!userData.cpf || userData.cpf.trim() === '') {
-      alert('Aqueles números do CPF. Não tem? Coloca ai!');
-      return false;
-    }
-    if (!isCPFValid(userData.cpf)) {
-      alert('Não amarrar a cara, mas o CPF tá errado.');
-      return false;
-    }
-    // Verificação de duplicidade de CPF
-    const existingCPF = users.find(
-      (u) => u.cpf === userData.cpf && Number(u.id) !== Number(id)
-    );
-    if (existingCPF) {
-      alert('Já tem um queridu com este CPF');
-      return false;
-    }
-
-    // Verificação de duplicidade de email
-    const existingEmail = users.find(
-      (m) => m.email === userData.email && Number(m.id) !== Number(id)
-    );
-    if (existingEmail) {
-      alert('JJá tem um queridu com este E-mail.');
-      return false;
-    }
-    const response = await fetch(`http://localhost:3000/users/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(userData),
-    });
-    if (!response.ok) {
-      throw new Error('Falha ao atualizar usuário');
-    }
-    getUsers(); // Atualiza a lista de usuários após a atualização
-    return true;
-  }
-
-  function deleteUser(id) {
-    fetch(`http://localhost:3000/users/${id}`, {
-      method: 'DELETE',
-    })
-      .then(() => {
-        alert('Em dois toques deletou o queridu!');
-        getUsers(); // Atualiza a lista após a exclusão
-      })
-      .catch(() =>
-        alert(
-          'Sabe aquele boca-moli do programador? Aquele que mora lá pelo Campeche? Pois errou de novo. Não deletou o queridu.'
-        )
-      );
-  }
-
   return (
     <UsersContext.Provider
       value={{
@@ -218,12 +292,16 @@ export const UsersContextProvider = ({ children }) => {
         createUser,
         userLogin,
         userLogout,
+        currentUser,
         getUserById,
+        updateCurrentUser,
         updateUser,
         userCount,
         deleteUser,
         isCPFValid,
         isUserAuthenticated,
+        getUsers,
+        countUserCollectionPoints,
       }}
     >
       {children}

@@ -43,6 +43,15 @@ function EditCollectPlace() {
 
   useEffect(() => {
     if (cep && cep.length === 9) {
+      // Limpa os campos antes de buscar novos dados
+      setValue('street', '');
+      setValue('neighborhood', '');
+      setValue('city', '');
+      setValue('state', '');
+      setValue('latitude', '');
+      setValue('longitude', '');
+
+      // Procurar o endereço com o ViaCEP
       fetch(`https://viacep.com.br/ws/${cep.replace('-', '')}/json/`)
         .then((response) => response.json())
         .then((data) => {
@@ -52,15 +61,42 @@ function EditCollectPlace() {
             setValue('city', data.localidade);
             setValue('state', data.uf);
           } else {
-            alert('Não amarrar a cara, mas o CEP não foi encontrado.');
+            alert('Não amarrar a cara, mas o CEP não foi encontrado');
           }
         })
-        .catch((error) => console.error('Erro ao buscar CEP', error));
+        .catch((error) =>
+          console.error('Que tanso esse programador, erro ao buscar CEP', error)
+        );
+
+      // Substituindo OpenCageData pela Nominatim OpenStreetMap para geolocalização
+      fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&countrycodes=BR&limit=1&postalcode=${cep.replace(
+          '-',
+          ''
+        )}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.length > 0) {
+            const { lat, lon } = data[0];
+            setValue('latitude', lat);
+            setValue('longitude', lon);
+          } else {
+            console.error('Nenhum resultado encontrado para o CEP fornecido.');
+          }
+        })
+        .catch((error) => {
+          console.error('Erro ao obter dados de geolocalização:', error);
+        });
     }
   }, [cep, setValue]);
 
   const onSubmit = async (data) => {
     try {
+      const formattedData = {
+        ...data,
+        postalcode: data.postalcode.replace('-', ''), // Removendo a máscara
+      };
       await updatePlace(id, data);
       alert('Dazumbanho! O local de coleta atualizou certinho!');
       navigate(`/collectPlaces/details/${id}`);
@@ -89,16 +125,14 @@ function EditCollectPlace() {
                 <label htmlFor=''>Nome do ponto de coleta *</label>
                 <input
                   type='text'
-                  className={errors.place ? 'input-error' : ''}
+                  className={errors.name ? 'input-error' : ''}
                   placeholder='Ponto de coleta do Centro'
-                  {...register('place', {
+                  {...register('name', {
                     required: 'Dásh um nome para o ponto de coleta',
                   })}
                 />
-                {errors.place && (
-                  <small className='error-message'>
-                    {errors.place.message}
-                  </small>
+                {errors.name && (
+                  <small className='error-message'>{errors.name.message}</small>
                 )}
               </div>
             </div>
@@ -107,8 +141,8 @@ function EditCollectPlace() {
               <div className='form-field'>
                 <label htmlFor=''>Tipo de Coleta *</label>
                 <select
-                  className={errors.collect ? 'input-error' : ''}
-                  {...register('collect', {
+                  className={errors.recycle_types ? 'input-error' : ''}
+                  {...register('recycle_types', {
                     required: 'Os queridus querem saber o que coleta',
                   })}
                 >
@@ -131,9 +165,9 @@ function EditCollectPlace() {
                   <option value='Resíduos Volumosos'>Resíduos Volumosos</option>
                   <option value='Vidros'>Vidros</option>
                 </select>
-                {errors.collect && (
+                {errors.recycle_types && (
                   <small className='error-message'>
-                    {errors.collect.message}
+                    {errors.recycle_types.message}
                   </small>
                 )}
               </div>
@@ -145,13 +179,13 @@ function EditCollectPlace() {
                 <textarea
                   className={errors.placeDescription ? 'input-error' : ''}
                   placeholder='Mi conta másh mó quiridu'
-                  {...register('placeDescription', {
+                  {...register('description', {
                     required: 'Aproveita e fala sobre o local',
                   })}
                 />
-                {errors.placeDescription && (
+                {errors.description && (
                   <small className='error-message'>
-                    {errors.placeDescription.message}
+                    {errors.description.message}
                   </small>
                 )}
               </div>
