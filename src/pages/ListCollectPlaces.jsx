@@ -11,7 +11,8 @@ import { FaUser, FaEye } from 'react-icons/fa';
 
 function ListCollectPlaces() {
   const { places, deletePlace } = useContext(CollectPlaceContext);
-  const { currentUser } = useContext(UsersContext);
+  const { getDecodedToken } = useContext(UsersContext);
+  const decodedToken = getDecodedToken();
 
   const MapLink = ({ placeId, children }) => (
     <Link to={`/collectPlaces/details/${placeId}`}>{children}</Link>
@@ -130,10 +131,10 @@ function ListCollectPlaces() {
               </div>
             </div>
           </div>
-          <div className='divisor'></div>
+          <div className='divisor'></div>{' '}
           <div className='card-detail-actions'>
-            {currentUser &&
-              (currentUser.admin || currentUser.id === place.user_id) && (
+            {decodedToken && // Usar decodedToken em vez de currentUser
+              (decodedToken.admin || decodedToken.id === place.user_id) && ( // Verifica se é admin ou dono do local
                 <>
                   <Link
                     className='btn btn-danger'

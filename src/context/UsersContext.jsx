@@ -347,6 +347,7 @@ export const UsersContextProvider = ({ children }) => {
         countUserCollectionPoints,
         updateCurrentUser,
         decodedToken,
+        getDecodedToken,
       }}
     >
       {children}
