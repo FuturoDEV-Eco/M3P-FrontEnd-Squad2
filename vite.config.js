@@ -1,14 +1,17 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 import { config } from 'dotenv';
 
-config()
+config();
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  optimizeDeps: {
+    include: ['jwt-decode'],
+  },
   define: {
     // eslint-disable-next-line no-undef
-    'process.env': process.env
-  }
-})
+    'process.env': process.env,
+  },
+});

@@ -1,28 +1,18 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { UsersContext } from '../context/UsersContext';
-import { CollectPlaceContext } from '../context/CollectPlaceContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import simbol from '../assets/favicon.png';
-import { MdEditSquare } from 'react-icons/md';
-import { MdDelete } from 'react-icons/md';
+
 function ListUsers() {
-  const { users, deleteUser } = useContext(UsersContext);
-  const { countPlacesByUserId } = useContext(CollectPlaceContext);
-  const [placeCounts, setPlaceCounts] = useState(null); // Inicializa como null
+  const { users, deleteUser, decodedToken } = useContext(UsersContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const loadPlaceCounts = async () => {
-      const counts = {};
-      for (const user of users) {
-        counts[user.id] = await countPlacesByUserId(user.id);
-      }
-      setPlaceCounts(counts); // Atualiza os contadores para cada usuário
-    };
-
-    if (users.length > 0) {
-      loadPlaceCounts();
+    // Redireciona para a página inicial se o usuário não for administrador
+    if (!decodedToken || !decodedToken.admin) {
+      navigate('/');
     }
-  }, [users]); // Dependência do useEffect são os usuários
+  }, [decodedToken, navigate]);
 
   return (
     <>
@@ -33,7 +23,7 @@ function ListUsers() {
       <div className='section-cards'>
         {users.map((user) => (
           <div className='cards' key={user.id}>
-            <div className='card-body'>
+            <div className='card-body flexible'>
               <div>
                 <strong>ID:</strong> {user.id}
               </div>
@@ -47,51 +37,53 @@ function ListUsers() {
                 <strong>CPF:</strong> {user.cpf}
               </div>
               <div className='success'>
-                <strong>Data nascimento:</strong> {user.birthDate}
+                <strong>Data nascimento:</strong> {user.birthdate}
               </div>
               <div className='success'>
                 <strong>Email:</strong> {user.email}
               </div>
               <div className='success'>
                 <strong>Endereço:</strong>{' '}
-                {`${user.street}, ${user.number} ${user.complement}, ${user.neighborhood}, ${user.city}, ${user.state}, ${user.zipCode}`}
+                {`${user.street}, ${user.number} ${user.complement || ''}, ${
+                  user.neighborhood
+                }, ${user.city}, ${user.state}, ${user.postalcode}`}
               </div>
               <div className='success'>
                 <strong>Administrador:</strong> {user.admin ? 'Sim' : 'Não'}
               </div>
               <div className='success'>
                 <strong>
-                  {placeCounts ? (
-                    placeCounts[user.id] > 0 ? (
-                      <Link
-                        className='primary-bold'
-                        to={`/collectPlaces/listbyuser/${user.id}`}
-                        title='Ver coletas do usuário'
-                      >
-                        {placeCounts[user.id]}
-                      </Link>
-                    ) : (
-                      placeCounts[user.id] || 0
-                    )
-                  ) : (
-                    'Carregando...'
-                  )}
-                </strong>{' '}
-                coleta cadastrada
-              </div>
-              <div className='link-details-users'>
-                {JSON.parse(localStorage.getItem('admin')) && (
-                  <>
+                  {user.collectionPoints.length > 0 ? (
                     <Link
-                      className='primary'
+                      className='success'
+                      to={`/collectPlaces/listbyuser/${user.id}`}
+                      title='Ver coletas do usuário'
+                    >
+                      {user.collectionPoints.length > 1
+                        ? `${user.collectionPoints.length} Coletas cadastradas`
+                        : `${user.collectionPoints.length} Coleta cadastrada`}
+                    </Link>
+                  ) : (
+                    '0 Coletas cadastradas'
+                  )}
+                </strong>
+              </div>
+            </div>
+            {decodedToken && decodedToken.admin && (
+              <>
+                <div className='divisor'></div>
+                <div className='link-details-users'>
+                  <div className='card-detail-actions'>
+                    <Link
+                      className='btn btn-primary'
                       to={`/users/edit/${user.id}`}
                       title='Editar usuário'
                     >
-                      <MdEditSquare />
+                      <span>Editar</span>
                     </Link>
-                    {placeCounts && placeCounts[user.id] === 0 && (
+                    {user.collectionPoints.length === 0 && (
                       <Link
-                        className='danger'
+                        className='btn btn-danger'
                         to={`/users/delete/${user.id}`}
                         title='Excluir usuário'
                         onClick={(e) => {
@@ -105,13 +97,13 @@ function ListUsers() {
                           }
                         }}
                       >
-                        <MdDelete />
+                        <span>Remover</span>
                       </Link>
                     )}
-                  </>
-                )}
-              </div>
-            </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         ))}
       </div>
