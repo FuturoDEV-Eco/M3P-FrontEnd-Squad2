@@ -302,6 +302,19 @@ a {
   background-color: var(--cta-hover);
 }
 
+.btn.btn-menu{
+  border-radius: 0;
+  background-color: var(--secondary);
+  color: var(--primary);
+}
+.btn.btn-menu:hover{
+  background-color: var(--primary);
+  color: var(--contrast);
+}
+.btn.btn-menu.btn-menu-danger:hover{
+  background-color: var(--penn-red);
+  color: var(--contrast);
+}
 .btn.btn-primary{
   font-size: 1rem;
   background-color: var(--primary);
@@ -548,7 +561,15 @@ button[type='submit']:hover {
 .nav-container {
   width: 100%;
   color: var(--primary);
+  z-index: 200;
   /* Garante que o contêiner do menu ocupe a largura total */
+}
+
+.nav-links.options{
+  opacity: 0;
+}
+.nav-links.options-authenticated{
+  animation: fadeIn .5s forwards 1s;
 }
 
 .nav-links {
@@ -684,5 +705,13 @@ footer .footer-details{
 @media (min-width: 2500px) {
   body {
     font-size: 2em;
+  }
+}
+@keyframes fadeIn {
+  from{
+    opacity: 0;
+  }
+  to{
+    opacity: 1;
   }
 }
