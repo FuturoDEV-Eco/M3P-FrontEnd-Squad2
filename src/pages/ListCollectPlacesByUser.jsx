@@ -16,7 +16,7 @@ function ListCollectPlacesByUser() {
   const { user_id } = useParams();
   const { getCollectPlacesByUserId, deletePlace } =
     useContext(CollectPlaceContext);
-  const { currentUser } = useContext(UsersContext); // Acessando o currentUser diretamente
+  const { decodedToken } = useContext(UsersContext); // Usando decodedToken para acessar os dados do usuário autenticado
   const [userPlaces, setUserPlaces] = useState([]);
 
   useEffect(() => {
@@ -107,9 +107,9 @@ function ListCollectPlacesByUser() {
                       <FaUser /> <span>Mó Quiridu</span>
                     </div>
                     <small>
-                      {/* Exibindo o nome do usuário autenticado a partir do currentUser */}
-                      {currentUser
-                        ? currentUser.name
+                      {/* Exibindo o nome do usuário autenticado a partir do decodedToken */}
+                      {decodedToken
+                        ? decodedToken.name
                         : 'Usuário não identificado'}
                     </small>
                   </div>
@@ -117,7 +117,8 @@ function ListCollectPlacesByUser() {
               </div>
               <div className='divisor'></div>
               <div className='card-detail-actions'>
-                {(currentUser?.admin || currentUser?.id === place.user_id) && (
+                {(decodedToken?.admin ||
+                  decodedToken?.id === place.user_id) && (
                   <>
                     <Link
                       className='btn btn-danger'

@@ -2,40 +2,39 @@ import { useContext, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { UsersContext } from '../../context/UsersContext';
 import logo from '../../assets/destinoCerto.png';
-import { FaArrowsSpin, FaUserGear, FaUser } from 'react-icons/fa6';
+import { FaArrowsSpin, FaUserGear, FaGears, FaUser } from 'react-icons/fa6';
 import { RiChatSmile2Line } from 'react-icons/ri';
 
-function Header(actualPage) {
+function Header() {
   const {
     userLogout,
     isUserAuthenticated,
-    currentUser,
     countUserCollectionPoints,
     deleteUser,
+    decodedToken,
   } = useContext(UsersContext);
 
   const [collectionPointsCount, setCollectionPointsCount] = useState(0);
 
-  const isAdmin = currentUser ? currentUser.admin : false;
-  const user_id = currentUser ? currentUser.id : null;
+  // Obtém os valores diretamente do token decodificado
+  const isAdmin = decodedToken ? decodedToken.admin : false;
+  const user_id = decodedToken ? decodedToken.id : null;
 
-  const location = useLocation(); // Usando useLocation para pegar a rota atual
+  const location = useLocation();
 
   // Verifica se a rota atual é a página de login ou cadastro
   const isLoginOrRegisterPage =
     location.pathname === '/login' || location.pathname === '/users/create';
 
   useEffect(() => {
-    if (isUserAuthenticated()) {
-      // Chama a função para contar os pontos de coleta
+    if (isUserAuthenticated() && decodedToken) {
       countUserCollectionPoints().then((count) => {
         setCollectionPointsCount(count);
       });
     }
-  }, [isUserAuthenticated]);
+  }, [isUserAuthenticated, decodedToken]);
 
   const handleDeleteAccount = () => {
-    // Verifica se o usuário tem pontos de coleta antes de permitir a deleção
     if (collectionPointsCount > 0) {
       alert(
         'ôh feio! O queridu tem pontos de coleta ainda. Nós não podemos te mandar embora assim.'
@@ -44,7 +43,7 @@ function Header(actualPage) {
     }
 
     if (window.confirm('Táis certo disso? ')) {
-      deleteUser(user_id); // Chama deleteUser
+      deleteUser(user_id);
     }
   };
 
@@ -53,9 +52,7 @@ function Header(actualPage) {
       <div className='header-container'>
         <div
           className={
-            !isUserAuthenticated() &&
-            (actualPage.actualPage === 'userCreate' ||
-              actualPage.actualPage === 'login')
+            !isUserAuthenticated() && isLoginOrRegisterPage
               ? 'logo-container center'
               : 'logo-container'
           }
@@ -68,7 +65,7 @@ function Header(actualPage) {
         <div className='nav-container'>
           <nav>
             <ul className='nav-links'>
-              {/* Se não estiver autenticado e não estiver na página de login/cadastro, exibe o link de Login/Cadastro */}
+              {/* Exibe Login/Cadastro se o usuário não estiver autenticado e não estiver na página de login/cadastro */}
               {!isUserAuthenticated() && !isLoginOrRegisterPage && (
                 <li>
                   <Link to='/login'>
@@ -76,6 +73,8 @@ function Header(actualPage) {
                   </Link>
                 </li>
               )}
+
+              {/* Exibe menus se o usuário estiver autenticado */}
               {isUserAuthenticated() && (
                 <>
                   {/* Menu Coletas */}
@@ -95,11 +94,32 @@ function Header(actualPage) {
                   </li>
 
                   {/* Menu Expressões */}
-                  <li>
-                    <Link to='/regional-expressions'>
-                      <RiChatSmile2Line /> Expressões
-                    </Link>
+                  <li className='dropdown'>
+                    <div className='dropdown-toggle'>
+                      <RiChatSmile2Line />
+                      <span>Expressões</span>
+                    </div>
+                    <ul className='dropdown-content'>
+                      <li>
+                        <Link to='/regional-expressions'>Ver Expressões</Link>
+                      </li>
+                    </ul>
                   </li>
+
+                  {/* Menu Admin */}
+                  {isAdmin && (
+                    <li className='dropdown'>
+                      <div className='dropdown-toggle'>
+                        <FaGears />
+                        <span>Admin</span>
+                      </div>
+                      <ul className='dropdown-content'>
+                        <li>
+                          <Link to='/users/list'>Listar Usuários</Link>
+                        </li>
+                      </ul>
+                    </li>
+                  )}
 
                   {/* Menu Perfil */}
                   <li className='dropdown'>
@@ -111,24 +131,26 @@ function Header(actualPage) {
                       <li>
                         <Link to={`/users/edit/${user_id}`}>Editar Perfil</Link>
                       </li>
-                      <li>
-                        {collectionPointsCount > 0 ? (
+                      {collectionPointsCount > 0 ? (
+                        <li>
                           <Link to={`/collectPlaces/listbyuser/${user_id}`}>
                             Meus Locais: {collectionPointsCount} pontos
                           </Link>
-                        ) : (
+                        </li>
+                      ) : (
+                        <li>
                           <Link to='/collectPlaces/create'>
                             Cadastrar Ponto
                           </Link>
-                        )}
-                      </li>
+                        </li>
+                      )}
                       <li>
                         <button
                           className='btn btn-danger'
                           title='Excluir conta'
                           onClick={handleDeleteAccount}
                         >
-                          <span>Encerrar conta</span>
+                          Encerrar conta
                         </button>
                       </li>
                       <li>

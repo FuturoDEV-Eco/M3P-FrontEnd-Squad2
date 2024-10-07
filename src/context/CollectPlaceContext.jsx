@@ -66,17 +66,11 @@ export const CollectPlaceContextProvider = ({ children }) => {
 
   async function countPlacesByUserId(user_id) {
     try {
-      const response = await fetch(
-        `http://localhost:3000/collectPlaces?user_id=${user_id}`
-      );
-      if (!response.ok) {
-        throw new Error('Falha ao buscar locais de');
-      }
-      const places = await response.json();
-      return places.length; // Retorna a quantidade de locais de coleta para esse usuário
+      const response = await api.get(`local/collectPlaces?user_id=${user_id}`);
+      return response.data.count || 0;
     } catch (error) {
       console.error('Erro ao contar locais de coleta por usuário:', error);
-      return 0; // Retorna zero em caso de erro
+      return 0;
     }
   }
 

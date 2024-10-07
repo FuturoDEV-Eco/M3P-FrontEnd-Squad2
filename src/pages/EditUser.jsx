@@ -13,7 +13,7 @@ function EditUser() {
     getUserById,
     updateUser,
     updateCurrentUser,
-    currentUser,
+    decodedToken,
     isUserAuthenticated,
   } = useContext(UsersContext);
   const [loading, setLoading] = useState(true);
@@ -35,7 +35,7 @@ function EditUser() {
       return;
     }
 
-    setIsAdmin(currentUser?.admin || false);
+    setIsAdmin(decodedToken?.admin || false);
 
     async function fetchUserData() {
       try {
@@ -45,7 +45,7 @@ function EditUser() {
           userData = await getUserById(id);
         } else {
           // Usuário editando seus próprios dados
-          userData = currentUser;
+          userData = await getUserById(decodedToken.id);
         }
 
         reset(userData);
@@ -66,7 +66,7 @@ function EditUser() {
     reset,
     setValue,
     getUserById,
-    currentUser,
+    decodedToken,
     isUserAuthenticated,
     navigate,
     isAdmin,
@@ -210,8 +210,8 @@ function EditUser() {
                         })}
                         type='radio'
                         value='NI'
-                      />{' '}
-                      Não informado{' '}
+                      />
+                      Não informado
                     </label>
                   </div>
                 </div>
@@ -232,7 +232,7 @@ function EditUser() {
                   placeholder='CPF'
                   maskChar={null}
                   {...register('cpf', {
-                    required: 'Aqueles números do CPF. Não tem? Coloca ai!',
+                    required: 'Aqueles números do CPF. Não tem? Coloca aí!',
                     validate: {
                       isValidCPF: (value) => {
                         const numericCPF = value.replace(/[^\d]/g, '');
@@ -263,7 +263,7 @@ function EditUser() {
                   id='birthdate'
                   className={errors.birthdate ? 'input-error' : ''}
                   {...register('birthdate', {
-                    required: 'Dix aqui a data. Ninguém vai saber a idade.',
+                    required: 'Diz aqui a data. Ninguém vai saber a idade.',
                   })}
                 />
                 {errors.birthdate && (
