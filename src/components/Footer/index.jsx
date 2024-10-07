@@ -11,8 +11,8 @@ function Footer() {
         <div>
           <p>Desenvolvido por:</p>
           <div className='link-details footer-details'>
-            <span>Charles Biveu Doehl</span>
             <span>Bianca Silva Barcelos</span>
+            <span>Charles Biveu Doehl</span>
             <span>Francisco Grimes da Silva</span>
           </div>
         </div>

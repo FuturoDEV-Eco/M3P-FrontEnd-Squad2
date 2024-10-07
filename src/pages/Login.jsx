@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { UsersContext } from '../context/UsersContext';
-import Header from '../components/Header';
+import logo from '../assets/destinoCerto.png';
 
 function Login() {
   const { userLogin } = useContext(UsersContext);
@@ -17,7 +17,17 @@ function Login() {
   return (
     <div className='login-main'>
       <div className='container-login'>
-        <Header actualPage="login"/>
+      <header>
+      <div className='header-container'>
+        <div
+          className='logo-container center'
+        >
+          <Link to='/'>
+            <img src={logo} className='logo' alt='Destino certo' />
+          </Link>
+        </div>
+        </div>
+        </header>
         <div className='container-form'>
           <div className='card-form'>
             <span>Login</span>
@@ -67,14 +77,14 @@ function Login() {
             </div>
             
           </div>
-          <div className='singin'>
+          {/* <div className='singin'>
             <small>
               {' '}
               Para testar como administrador utilize:
               <br />
               admin@admin.com senha: 123456
             </small>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

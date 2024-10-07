@@ -102,6 +102,7 @@ export const CollectPlaceContextProvider = ({ children }) => {
 
       alert('Em dois toques acabou com o ponto de coleta');
       getPlaces(); // Atualiza a lista após a exclusão
+      location.href = '/'
     } catch (error) {
       console.error('Erro ao deletar o local de coleta:', error);
       alert(

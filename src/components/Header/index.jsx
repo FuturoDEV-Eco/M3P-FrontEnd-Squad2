@@ -76,7 +76,8 @@ function Header() {
 
               {/* Exibe menus se o usuário estiver autenticado */}
               {isUserAuthenticated() && (
-                <>
+                <div className={
+                  !isUserAuthenticated() ? 'nav-links options': ' nav-links options options-authenticated'}>
                   {/* Menu Coletas */}
                   <li className='dropdown'>
                     <div className='dropdown-toggle'>
@@ -145,13 +146,13 @@ function Header() {
                         </li>
                       )}
                       <li>
-                        <button
-                          className='btn btn-danger'
+                        <Link
+                          className='btn btn-menu btn-menu-danger'
                           title='Excluir conta'
                           onClick={handleDeleteAccount}
                         >
                           Encerrar conta
-                        </button>
+                        </Link>
                       </li>
                       <li>
                         <Link
@@ -166,7 +167,7 @@ function Header() {
                       </li>
                     </ul>
                   </li>
-                </>
+                </div>
               )}
             </ul>
           </nav>
