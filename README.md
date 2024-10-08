@@ -130,12 +130,14 @@ Essas melhorias não só aumentariam a utilidade e a relevância da aplicação 
 
 Bibliotecas / Componentes:
 
-- [json-server](https://github.com/typicode/json-server)
+- [axios](https://axios-http.com/ptbr/docs/intro)
+- [jwt-decode](https://fusionauth.io/dev-tools/jwt-decoder)
 - [react-router-dom](https://reactrouter.com/en/main)
 - [react-hook-form](https://react-hook-form.com/)
 - [react-input-mask](https://github.com/sanniassin/react-input-mask)
 - [react-icons](https://react-icons.github.io/react-icons/)
 - [react-leaflet](https://react-leaflet.js.org/)
+
 
 Sites
 
