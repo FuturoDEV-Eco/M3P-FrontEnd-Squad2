@@ -4,7 +4,7 @@
 
 # Destino Certo
 
-**Destino Certo** foi desenvolvido como projeto final, individual, do módulo 01 da formação **FuturoDev** do **Floripa Mais Tec**, coordenado pelo **Lab365** em parceria com o **SESI** e **SENAC**.
+**Destino Certo** foi desenvolvido como projeto final da formação **FuturoDev** do **Floripa Mais Tec**, coordenado pelo **Lab365** em parceria com o **SESI** e **SENAI**.
 
 **Destino Certo** é uma plataforma que facilita o gerenciamento de resíduos e o acesso a pontos de coleta de materiais recicláveis. Usuários podem cadastrar novos pontos de coleta, encontrar pontos próximos em um mapa interativo ou em uma listagem, visualizar informações sobre os materiais aceitos em cada ponto e registrar suas próprias contribuições para a reciclagem.
 
@@ -14,13 +14,18 @@ Este projeto visa incentivar o descarte correto do lixo, auxiliando a localizar 
   <img src="https://github.com/FuturoDEV-Eco/M3P-FrontEnd-Squad2/blob/main/public/prints/globalMap.jpg?raw=true" alt="destinoCerto">
 </p>
 
+## Deploys da aplicação
+
+- Deploy BackEnd: [Render](https://m3p-backend-destino-certo.onrender.com/server/status)
+- Deploy FrontEnd: [Vercel](https://m3-p-front-end-squad2-destino-certo.vercel.app/)
+
 ## Regras de negócio
 
 - Os pontos de coleta podem ser **editados** somente pelo usuário que cadastrou ou pelo administrador
 - Os pontos de coleta podem ser **deletados** somente pelo usuário que cadastrou ou pelo administrador
 - CPF e e-mail **não podem ser duplicados** no cadastro e edição do usuário
 - CPF deve ser **válido** no cadastro e edição do usuário
-- Usuários que tiverem pontos de coleta cadastrados **NÃO** poderão ser excluídos.
+- Usuários que tiverem pontos de coleta cadastrados **NÃO** poderão ser excluídos
 
 ## Técnicas e Tecnologias Utilizadas
 
@@ -29,8 +34,6 @@ Este projeto visa incentivar o descarte correto do lixo, auxiliando a localizar 
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)](https://vitejs.dev/)
-
-O projeto **Destino Certo** adota uma arquitetura inspirada no modelo MVC, com a utilização de Context API para a gestão de estados, representando os controllers. O back-end é simulado pelo `json-server`, criando uma representação funcional de um banco de dados.
 
 ### Componentes e Bibliotecas
 
@@ -53,13 +56,14 @@ Foi utilizado Context API para gerenciar os estados globais da aplicação, divi
 ### Integrações Externas
 
 - **ViaCEP API**: Integrada para obter detalhes de endereços a partir do CEP, utilizada nos formulários de cadastro e edição de usuários e pontos de coleta.
+- **Open Street Map**: Após pegar o CEP, essa API verifica a latitude e longitude, adicionando ao campo do formulário.
 
 ### Responsividade
 
 Destino Certo foi desenvolvido para suportar diferentes resoluções de tela. O desenvolvimento parte
 do conceito mobile-first para depois abranger telas maiores.
 
-https://github.com/FuturoDEV-Eco/M3P-FrontEnd-Squad2/assets/164348201/8957decf-54b0-48ae-ae7b-3f973d97ffd5
+https://github.com/user-attachments/assets/7446a608-addf-47ea-93a4-25bc195d4ba6
 
 ### Área administrativa
 
@@ -102,32 +106,25 @@ npm run dev
 
 ## Melhorias Futuras
 
-### Geolocalização Aprimorada:
-
-Implementar a funcionalidade de obter a latitude e longitude diretamente no mapa ao selecionar um ponto, facilitando o cadastro de novos pontos de coleta com maior precisão geográfica.
-
 ### Regionalização da Interface:
 
 Criar um contexto para expressões regionais, permitindo que a aplicação se adapte ao linguajar local de diferentes regiões. Atualmente, a aplicação utiliza expressões típicas de Florianópolis (o "dialeto manezês"). A ideia é expandir essa funcionalidade para incluir outras variantes regionais, permitindo aos usuários escolher o "sotaque" da interface de acordo com suas preferências ou localidade.
 
-### Enriquecimento de Conteúdo:
+### Enriquecimento de Conteúdo (Blog sobre reciclagem):
 
 Ampliar o conteúdo informativo disponível na aplicação incluindo textos e vídeos educativos sobre a importância do descarte correto de resíduos. Isso reforçaria o caráter educativo do **Destino Certo** e aumentaria a conscientização sobre reciclagem e gestão de resíduos.
 
+### Cadastro para Usuários Jurídicos:
+
+A inclusão de um sistema de cadastro para usuários jurídicos permitirá que empresas, como a Comcap, possam registrar seus pontos de coleta. Essa funcionalidade facilitará a gestão amparada por dados concretos, potencializando a coleta e a reciclagem.
+
+### Registro de contribuições dos usuários:
+
+Os usuários podem registrar suas contribuições para a reciclagem no software, criando um histórico de ações sustentáveis. Esse recurso não só incentiva a participação, mas também permite que os usuários visualizem seu impacto coletivo na preservação do meio ambiente (gamificação).
+
+
 Essas melhorias não só aumentariam a utilidade e a relevância da aplicação , mas também ajudariam a engajar ainda mais os usuários na causa ambiental.
 
-## Bugs Conhecidos
-
-### Problema com `react-input-mask`
-
-- **Descrição do Problema**: Ao utilizar a biblioteca `react-input-mask` para adicionar máscaras de entrada aos campos de formulário, foi identificado um aviso no console:
-  _Warning: findDOMNode is deprecated and will be removed in the next major release. Instead, add a ref directly to the element you want to reference. Learn more about using refs safely here: [React docs on refs](https://reactjs.org/docs/refs-and-the-dom.html)._
-
-Este aviso é gerado devido ao uso de `findDOMNode`, que é considerado obsoleto e será removido em futuras versões do React.
-
-- **Impacto**: O aviso não afeta a funcionalidade atual do aplicativo, mas indica a necessidade de atualização para garantir a compatibilidade com futuras versões do React.
-
-- **Plano de Ação**: Estou monitorando o repositório da `react-input-mask` para uma atualização que resolve esse problema. Existe um pull request aberto que promete corrigir essa questão, e assim que for integrado e disponibilizado, planejo atualizar a dependência em nosso projeto para eliminar este aviso.
 
 ## Créditos
 
@@ -145,3 +142,10 @@ Sites
 - Gerar pessoas: [4Devs](https://www.4devs.com.br/gerador_de_pessoas)
 - Cores: [ Coolors ](https://coolors.com/)
 - Fontes: [ Google Fonts](https://fonts.google.com/)
+
+
+## Autores
+
+- Bianca Silva Barcelos: [GitHub](https://github.com/BiancaBarcelos)
+- Charles Biveu Doehl: [GitHub](https://github.com/charlesbiveu)
+- Francisco Grimes da Silva: [GitHub](https://github.com/franciscogrimes)
