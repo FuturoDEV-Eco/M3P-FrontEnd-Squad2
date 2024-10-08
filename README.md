@@ -131,7 +131,7 @@ Essas melhorias não só aumentariam a utilidade e a relevância da aplicação 
 Bibliotecas / Componentes:
 
 - [axios](https://axios-http.com/ptbr/docs/intro)
-- [jwt-decode](https://fusionauth.io/dev-tools/jwt-decoder).
+- [jwt-decode](https://fusionauth.io/dev-tools/jwt-decoder)
 - [react-router-dom](https://reactrouter.com/en/main)
 - [react-hook-form](https://react-hook-form.com/)
 - [react-input-mask](https://github.com/sanniassin/react-input-mask)
